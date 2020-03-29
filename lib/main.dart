@@ -1,6 +1,3 @@
-import 'package:dr_kirana/screens/dashboard.dart';
-import 'package:dr_kirana/screens/listcapture.dart';
-import 'package:dr_kirana/screens/loginpage.dart';
 import 'package:dr_kirana/services/authservice.dart';
 import 'package:flutter/material.dart';
 
