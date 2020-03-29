@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "629641394080",
+    "firebase_url": "https://dr-kirana-final.firebaseio.com",
+    "project_id": "dr-kirana-final",
+    "storage_bucket": "dr-kirana-final.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:629641394080:android:5304f4a7f1fe7551d196c5",
+        "android_client_info": {
+          "package_name": "com.hyperlog.dr_kirana"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "629641394080-3t02uk3vichlb56qem2pkg7fv0au5v9a.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.hyperlog.dr_kirana",
+            "certificate_hash": "9b646ebe26a218e3716592bbef8426f381a0b865"
+          }
+        },
+        {
+          "client_id": "629641394080-9jki0comvv0061vlmbsj5pa0joocurfb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAaqhxRs-OXuE7_cwBM6N8yTz6VxjD0nQg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "629641394080-9jki0comvv0061vlmbsj5pa0joocurfb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

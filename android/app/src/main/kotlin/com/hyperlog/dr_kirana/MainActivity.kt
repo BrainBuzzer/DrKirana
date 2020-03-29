@@ -1,4 +1,4 @@
-package com.example.dr_kirana
+package com.hyperlog.dr_kirana
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity
