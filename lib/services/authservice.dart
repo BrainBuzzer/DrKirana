@@ -31,7 +31,8 @@ class AuthService {
     signIn(authCredential);
   }
 
-  getCurrentUID() {
-    FirebaseAuth.instance.currentUser();
+  Future<FirebaseUser> getCurrentUID() async {
+    FirebaseUser user = await FirebaseAuth.instance.currentUser();
+    return user;
   }
 }

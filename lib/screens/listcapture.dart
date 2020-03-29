@@ -49,7 +49,7 @@ class _ListCapturePageState extends State<ListCapturePage> {
                   onTap: _captureImage,
                 )
               ) : Image.file(_imageFile),
-              Uploader(file: _imageFile)
+              Uploader(file: _imageFile, type: widget.type)
             ]
           )
         )

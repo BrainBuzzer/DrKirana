@@ -1,11 +1,16 @@
 import 'dart:io';
+import 'package:dr_kirana/services/authservice.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:geolocator/geolocator.dart';
 
 class Uploader extends StatefulWidget {
   final File file;
-  Uploader({Key key, this.file}) : super(key: key);
+  final String type;
+  Uploader({Key key, this.file, this.type}) : super(key: key);
   @override
   _UploaderState createState() => _UploaderState();
 }
@@ -18,8 +23,31 @@ class _UploaderState extends State<Uploader> {
   void _startUpload() {
     String filePath = 'images/${DateTime.now()}.png';
 
-    setState(() {
-      _uploadTask = _storage.ref().child(filePath).putFile(widget.file);
+    final Geolocator geolocator = Geolocator()..forceAndroidLocationManager;
+    AuthService().getCurrentUID().then((user) {
+      geolocator
+        .getCurrentPosition(desiredAccuracy: LocationAccuracy.best)
+        .then((Position position) {
+          setState(() {
+            Firestore.instance.collection('orders').document()
+              .setData({
+                'location': {
+                  'latitude': position.latitude,
+                  'longitude': position.longitude
+                },
+                'uid': user.uid,
+                'status': "placed",
+                'image': filePath,
+                'type': widget.type,
+                'time_order_placed': DateTime.now()
+              });
+            _uploadTask = _storage.ref().child(filePath).putFile(widget.file);
+          });
+        }).catchError((e) {
+          print(e);
+        });
+    }).catchError((e) {
+      print(e);
     });
   }
 
