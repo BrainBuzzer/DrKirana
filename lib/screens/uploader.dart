@@ -1,11 +1,11 @@
 import 'dart:io';
 import 'package:dr_kirana/services/authservice.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 
 class Uploader extends StatefulWidget {
   final File file;
@@ -20,8 +20,29 @@ class _UploaderState extends State<Uploader> {
 
   StorageUploadTask _uploadTask;
 
-  void _startUpload() {
+  Future<Directory> getTemporaryDirectory() async {
+    return Directory.systemTemp;
+  }
+
+  Future<File> compressAndGetFile(File file, String targetPath) async {
+    var result = await FlutterImageCompress.compressAndGetFile(
+      file.absolute.path, targetPath,
+      quality: 88,
+      rotate: 180,
+    );
+
+    print(file.lengthSync());
+    print(result.lengthSync());
+
+    return result;
+  }
+
+  Future<void> _startUpload() async {
     String filePath = 'images/${DateTime.now()}.png';
+
+    final dir = await getTemporaryDirectory();
+    final targetPath = dir.absolute.path + "/temp.jpg";
+    final imgFile = await compressAndGetFile(widget.file, targetPath);
 
     final Geolocator geolocator = Geolocator()..forceAndroidLocationManager;
     AuthService().getCurrentUID().then((user) {
@@ -42,7 +63,7 @@ class _UploaderState extends State<Uploader> {
                 'type': widget.type,
                 'time_order_placed': DateTime.now()
               });
-            _uploadTask = _storage.ref().child(filePath).putFile(widget.file);
+            _uploadTask = _storage.ref().child(filePath).putFile(imgFile);
           });
         }).catchError((e) {
           print(e);
