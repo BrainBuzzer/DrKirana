@@ -17,6 +17,9 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: new AppBar(
+        title: new Text("Dr Kirana")
+      ),
       body: Form(
         key: formKey,
         child: Column(
@@ -83,7 +86,7 @@ class _LoginPageState extends State<LoginPage> {
     };
 
     await FirebaseAuth.instance.verifyPhoneNumber(
-        phoneNumber: phoneNo,
+        phoneNumber: '+91' + phoneNo,
         timeout: const Duration(seconds: 5),
         verificationCompleted: verified,
         verificationFailed: failed,
