@@ -36,6 +36,7 @@ class _UploaderState extends State<Uploader> {
                   'longitude': position.longitude
                 },
                 'uid': user.uid,
+                'phone_number': user.phoneNumber,
                 'status': "placed",
                 'image': filePath,
                 'type': widget.type,
