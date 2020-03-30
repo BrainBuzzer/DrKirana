@@ -39,14 +39,14 @@ class _UploaderState extends State<Uploader> {
            'type': widget.type,
            'time_order_placed': DateTime.now()
          });
+         setState(() {
+           _uploadTask = _storage.ref().child(filePath).putFile(widget.file);
+         });
        }).catchError((e) {
          print(e);
        });
      }).catchError((e) {
        print(e);
-     });
-     setState(() {
-       _uploadTask = _storage.ref().child(filePath).putFile(widget.file);
      });
   }
 

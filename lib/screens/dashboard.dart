@@ -1,3 +1,4 @@
+import 'package:dr_kirana/screens/help.dart';
 import 'package:dr_kirana/screens/listcapture.dart';
 import 'package:dr_kirana/screens/orders_list.dart';
 import 'package:flutter/cupertino.dart';
@@ -50,7 +51,9 @@ class _DashboardPageState extends State<DashboardPage> {
                       children: <Widget>[
                         Image(
                           image: AssetImage('assets/kirana.jpg'),
-                          fit: BoxFit.fill,
+                          fit: BoxFit.cover,
+                          width: MediaQuery.of(context).size.width,
+                          height: 200,
                         ),
                         Positioned.fill(
                           child: Opacity(
@@ -107,7 +110,9 @@ class _DashboardPageState extends State<DashboardPage> {
                       children: <Widget>[
                         Image(
                           image: AssetImage('assets/bhajipala.jpg'),
-                          fit: BoxFit.fill,
+                          fit: BoxFit.cover,
+                          width: MediaQuery.of(context).size.width,
+                          height: 200,
                         ),
                         Positioned.fill(
                           child: Opacity(
@@ -153,7 +158,15 @@ class _DashboardPageState extends State<DashboardPage> {
             ),
           ],
         )
-      )
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => HelpPage()));
+        },
+        child: Icon(
+          Icons.help_outline
+        ),
+      ),
     );
   }
 }
