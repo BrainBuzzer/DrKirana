@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:location_permissions/location_permissions.dart';
 
 class Uploader extends StatefulWidget {
   final File file;
@@ -17,7 +18,7 @@ class Uploader extends StatefulWidget {
 class _UploaderState extends State<Uploader> {
   final FirebaseStorage _storage = FirebaseStorage(storageBucket: 'gs://dr-kirana-final.appspot.com/');
   String filePath;
-  bool orderPlaced = false;
+  bool orderPlaced = false, locationService = true;
   StorageUploadTask _uploadTask;
 
   void _startUpload() {
@@ -27,8 +28,20 @@ class _UploaderState extends State<Uploader> {
     });
   }
 
-  Future<void> _storeOrder() {
+  Future<void> _storeOrder() async {
+    PermissionStatus permission = await LocationPermissions().checkPermissionStatus();
+    if(permission != PermissionStatus.granted) {
+      permission = await LocationPermissions().requestPermissions();
+    }
+
+    ServiceStatus serviceStatus = await LocationPermissions().checkServiceStatus();
+    if(serviceStatus != ServiceStatus.enabled) {
+      setState(() {
+        locationService = false;
+      });
+    }
     final Geolocator geolocator = Geolocator()..forceAndroidLocationManager;
+
     AuthService().getCurrentUID().then((user) {
       geolocator
           .getCurrentPosition(desiredAccuracy: LocationAccuracy.best)
@@ -76,6 +89,18 @@ class _UploaderState extends State<Uploader> {
               padding: EdgeInsets.all(16.0),
               child: Column(
                 children: <Widget>[
+                  if(!locationService)
+                    Center(
+                      child: Text(
+                        'TURN ON LOCATION TO PLACE ORDER',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.red,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20
+                        )
+                      )
+                    ),
                   if(_uploadTask.isComplete)
                     Center(
                       child: Text(
