@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dr_kirana/services/firebasestorageservice.dart';
 import 'package:flutter/cupertino.dart';
@@ -65,11 +66,15 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
   }
 
   Future<Widget> _getImage(BuildContext context, String image) async {
-    Image m;
+    CachedNetworkImage m;
     await FireStorageService.loadImage(context, image).then((downloadUrl) {
-      m = Image.network(
-        downloadUrl.toString(),
-        fit: BoxFit.scaleDown,
+      m = CachedNetworkImage(
+        imageUrl: downloadUrl.toString(),
+        placeholder: (context, url) => Container(
+          child: Center(
+            child: CircularProgressIndicator(),
+          )
+        ),
       );
     });
     return m;
