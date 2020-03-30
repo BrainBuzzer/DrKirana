@@ -1,10 +1,10 @@
 import 'dart:io';
 
 import 'package:dr_kirana/screens/uploader.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import 'package:image_picker/image_picker.dart';
+import 'package:after_layout/after_layout.dart';
 
 class ListCapturePage extends StatefulWidget {
   final String type;
@@ -15,8 +15,13 @@ class ListCapturePage extends StatefulWidget {
   _ListCapturePageState createState() => _ListCapturePageState();
 }
 
-class _ListCapturePageState extends State<ListCapturePage> {
+class _ListCapturePageState extends State<ListCapturePage> with AfterLayoutMixin<ListCapturePage> {
   File _imageFile;
+
+  @override
+  void afterFirstLayout(BuildContext context) {
+    _captureImage();
+  }
   
   Future<void> _captureImage() async {
     File selected = await ImagePicker.pickImage(source: ImageSource.camera);
