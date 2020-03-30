@@ -46,7 +46,7 @@ class _OrdersListPageState extends State<OrdersListPage> {
                   style: Theme.of(context).textTheme.headline,
                 ),
                 subtitle: new Text(
-                  timeago.format(snapshot.data.documents[index]['time_order_placed'].toDate(), locale: 'hi')
+                  timeago.format(snapshot.data.documents[index]['time_order_placed'].toDate())
                 ),
                 onTap: () {
                   Navigator.push(

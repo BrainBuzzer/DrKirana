@@ -56,20 +56,20 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                         color: Colors.amber[500],
                         child: Center(child: Text(widget.order['time_order_placed'].toDate().toString())),
                       ),
-                      Container(
-                        height: 50,
-                        color: Colors.amber[400],
-                        child: StreamBuilder(
-                          stream: Firestore.instance.collection('shops').document(widget.order['shop']).snapshots(),
-                          builder: (context, snapshot) {
-                            print(snapshot);
-                            if(!snapshot.hasData)
-                              return new Text("Loading Shop Details");
+                      StreamBuilder(
+                        stream: Firestore.instance.collection('shops').document(widget.order['shop']).snapshots(),
+                        builder: (context, snapshot) {
+                          print(snapshot);
+                          if(!snapshot.hasData)
+                            return new Text("Loading Shop Details");
 
-                            return new Center(child: Text(snapshot.data['name']));
-                          },
-                        )
-                      ),
+                          return new Container(
+                              height: 50,
+                              color: Colors.amber[400],
+                              child: Center(child: Text(snapshot.data['name']))
+                          );
+                        },
+                      )
                     ],
                   ),
                 ),
