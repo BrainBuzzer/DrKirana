@@ -85,19 +85,29 @@ class _UploaderState extends State<Uploader> {
             ? event.bytesTransferred / event.totalByteCount
             : 0;
 
-          return Column(
-            children: <Widget>[
-              if(_uploadTask.isComplete)
-                Text('Order placed successfully. Please wait for the shopkeeper to call you.'),
-
-              LinearProgressIndicator(value: progressPercent),
-              Center(
-                child: Text(
-                  '${(progressPercent*100).toStringAsFixed(2)}'
-                )
+          return Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Column(
+                children: <Widget>[
+                  if(_uploadTask.isComplete)
+                    Center(
+                      child: Text(
+                        'Order placed successfully. Please wait for the shopkeeper to call you.',
+                        style: Theme.of(context).textTheme.title,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  if(_uploadTask.isInProgress)
+                    CircularProgressIndicator(),
+                  LinearProgressIndicator(value: progressPercent),
+                  Center(
+                    child: Text(
+                      '${(progressPercent*100).toStringAsFixed(2)}'
+                    )
+                  )
+                ],
               )
-            ],
-          );
+            );
         }
       );
     } else {

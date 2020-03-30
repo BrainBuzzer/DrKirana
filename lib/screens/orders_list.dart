@@ -37,7 +37,7 @@ class _OrdersListPageState extends State<OrdersListPage> {
             itemBuilder: (context, index) {
               return ListTile(
                 title: new Text(
-                  (index+1).toString(),
+                  snapshot.data.documents[index]['type'] + " " + (index+1).toString(),
                   style: Theme.of(context).textTheme.headline,
                 ),
                 subtitle: new Text(
