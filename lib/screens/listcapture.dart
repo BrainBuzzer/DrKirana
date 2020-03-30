@@ -24,7 +24,7 @@ class _ListCapturePageState extends State<ListCapturePage> with AfterLayoutMixin
   }
   
   Future<void> _captureImage() async {
-    File selected = await ImagePicker.pickImage(source: ImageSource.camera);
+    File selected = await ImagePicker.pickImage(source: ImageSource.camera, imageQuality: 50);
 
     setState(() {
       _imageFile = selected;
