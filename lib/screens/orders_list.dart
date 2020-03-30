@@ -28,9 +28,14 @@ class _OrdersListPageState extends State<OrdersListPage> {
         title: new Text('Previous Orders'),
       ),
       body: StreamBuilder(
-        stream: Firestore.instance.collection('orders').where('uid', isEqualTo: uid).snapshots(),
+        stream: Firestore.instance.collection('orders').where('uid', isEqualTo: uid).orderBy('time_order_placed', descending: true).snapshots(),
         builder: (context, snapshot) {
-          if(!snapshot.hasData) return const Text('loadin...');
+          if(!snapshot.hasData)
+            return Container(
+              child: Center(
+                child: CircularProgressIndicator(),
+              )
+            );
           return ListView.builder(
             itemCount: snapshot.data.documents.length,
             itemExtent: 80,
