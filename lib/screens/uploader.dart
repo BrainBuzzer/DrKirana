@@ -16,38 +16,44 @@ class Uploader extends StatefulWidget {
 
 class _UploaderState extends State<Uploader> {
   final FirebaseStorage _storage = FirebaseStorage(storageBucket: 'gs://dr-kirana-final.appspot.com/');
-
+  String filePath;
+  bool orderPlaced = false;
   StorageUploadTask _uploadTask;
 
   void _startUpload() {
-    String filePath = 'images/${DateTime.now()}.png';
+    setState(() {
+      filePath = 'images/${DateTime.now()}.png';
+      _uploadTask = _storage.ref().child(filePath).putFile(widget.file);
+    });
+  }
 
-     final Geolocator geolocator = Geolocator()..forceAndroidLocationManager;
-     AuthService().getCurrentUID().then((user) {
-       geolocator
-           .getCurrentPosition(desiredAccuracy: LocationAccuracy.best)
-           .then((Position position) {
-         Firestore.instance.collection('orders').document().setData({
-           'location': {
-             'latitude': position.latitude,
-             'longitude': position.longitude
-           },
-           'uid': user.uid,
-           'phone_number': user.phoneNumber,
-           'status': "placed",
-           'image': filePath,
-           'type': widget.type,
-           'time_order_placed': DateTime.now()
-         });
-         setState(() {
-           _uploadTask = _storage.ref().child(filePath).putFile(widget.file);
-         });
-       }).catchError((e) {
-         print(e);
-       });
-     }).catchError((e) {
-       print(e);
-     });
+  Future<void> _storeOrder() {
+    final Geolocator geolocator = Geolocator()..forceAndroidLocationManager;
+    AuthService().getCurrentUID().then((user) {
+      geolocator
+          .getCurrentPosition(desiredAccuracy: LocationAccuracy.best)
+          .then((Position position) {
+        Firestore.instance.collection('orders').document().setData({
+          'location': {
+            'latitude': position.latitude,
+            'longitude': position.longitude
+          },
+          'uid': user.uid,
+          'phone_number': user.phoneNumber,
+          'status': "placed",
+          'image': filePath,
+          'type': widget.type,
+          'time_order_placed': DateTime.now()
+        });
+        setState(() {
+          orderPlaced = true;
+        });
+      }).catchError((e) {
+        print(e);
+      });
+    }).catchError((e) {
+      print(e);
+    });
   }
 
   @override
@@ -57,6 +63,10 @@ class _UploaderState extends State<Uploader> {
         stream: _uploadTask.events,
         builder: (context, snapshot) {
           var event = snapshot?.data?.snapshot;
+
+          if(_uploadTask.isComplete) {
+            _storeOrder();
+          }
 
           double progressPercent = event != null
             ? event.bytesTransferred / event.totalByteCount
@@ -69,7 +79,7 @@ class _UploaderState extends State<Uploader> {
                   if(_uploadTask.isComplete)
                     Center(
                       child: Text(
-                        'Order placed successfully. Please wait for the shopkeeper to call you.',
+                        orderPlaced ? 'Order Placed Successfully!' : 'Picture uploaded successfully. Please wait while we are placing you order.',
                         style: Theme.of(context).textTheme.title,
                         textAlign: TextAlign.center,
                       ),
