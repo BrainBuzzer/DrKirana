@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:dr_kirana/services/authservice.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'package:firebase_storage/firebase_storage.dart';
@@ -26,6 +27,7 @@ class _UploaderState extends State<Uploader> {
       filePath = 'images/${DateTime.now()}.png';
       _uploadTask = _storage.ref().child(filePath).putFile(widget.file);
     });
+    _storeOrder();
   }
 
   Future<void> _storeOrder() async {
@@ -42,30 +44,22 @@ class _UploaderState extends State<Uploader> {
     }
     final Geolocator geolocator = Geolocator()..forceAndroidLocationManager;
 
-    AuthService().getCurrentUID().then((user) {
-      geolocator
-          .getCurrentPosition(desiredAccuracy: LocationAccuracy.best)
-          .then((Position position) {
-        Firestore.instance.collection('orders').document().setData({
-          'location': {
-            'latitude': position.latitude,
-            'longitude': position.longitude
-          },
-          'uid': user.uid,
-          'phone_number': user.phoneNumber,
-          'status': "placed",
-          'image': filePath,
-          'type': widget.type,
-          'time_order_placed': DateTime.now()
-        });
-        setState(() {
-          orderPlaced = true;
-        });
-      }).catchError((e) {
-        print(e);
-      });
-    }).catchError((e) {
-      print(e);
+    FirebaseUser user = await AuthService().getCurrentUID();
+    Position position = await geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
+    Firestore.instance.collection('orders').add({
+      'location': {
+        'latitude': position.latitude,
+        'longitude': position.longitude
+      },
+      'uid': user.uid,
+      'phone_number': user.phoneNumber,
+      'status': "placed",
+      'image': filePath,
+      'type': widget.type,
+      'time_order_placed': DateTime.now()
+    });
+    setState(() {
+      orderPlaced = true;
     });
   }
 
@@ -76,10 +70,6 @@ class _UploaderState extends State<Uploader> {
         stream: _uploadTask.events,
         builder: (context, snapshot) {
           var event = snapshot?.data?.snapshot;
-
-          if(_uploadTask.isComplete) {
-            _storeOrder();
-          }
 
           double progressPercent = event != null
             ? event.bytesTransferred / event.totalByteCount
