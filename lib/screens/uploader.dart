@@ -10,8 +10,8 @@ import 'package:location_permissions/location_permissions.dart';
 
 class Uploader extends StatefulWidget {
   final File file;
-  final String type;
-  Uploader({Key key, this.file, this.type}) : super(key: key);
+  final String type, shop;
+  Uploader({Key key, @required this.file, @required this.type, @required this.shop}) : super(key: key);
   @override
   _UploaderState createState() => _UploaderState();
 }
@@ -56,7 +56,8 @@ class _UploaderState extends State<Uploader> {
       'status': "placed",
       'image': filePath,
       'type': widget.type,
-      'time_order_placed': DateTime.now()
+      'time_order_placed': DateTime.now(),
+      'shop': widget.shop,
     });
     setState(() {
       orderPlaced = true;

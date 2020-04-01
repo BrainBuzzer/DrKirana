@@ -1,5 +1,5 @@
 import 'package:dr_kirana/screens/help.dart';
-import 'package:dr_kirana/screens/listcapture.dart';
+import 'package:dr_kirana/screens/order/shop_selection.dart';
 import 'package:dr_kirana/screens/orders_list.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -45,7 +45,7 @@ class _DashboardPageState extends State<DashboardPage> {
                 clipBehavior: Clip.antiAliasWithSaveLayer,
                 child: InkWell(
                   onTap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => ListCapturePage(type: "किराणा")));
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => ShopSelectionPage(type: "किराणा")));
                   },
                   child: Stack(
                       children: <Widget>[
@@ -104,7 +104,7 @@ class _DashboardPageState extends State<DashboardPage> {
                 clipBehavior: Clip.antiAliasWithSaveLayer,
                 child: InkWell(
                   onTap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => ListCapturePage(type: "भाजीपाला")));
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => ShopSelectionPage(type: "भाजीपाला")));
                   },
                   child: Stack(
                       children: <Widget>[
@@ -136,6 +136,60 @@ class _DashboardPageState extends State<DashboardPage> {
                                     padding: EdgeInsets.fromLTRB(50,0,0,0),
                                     child: Text(
                                         "भाजीपाला",
+                                        style: TextStyle(
+                                          fontSize: 50,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                        )
+                                    )
+                                )
+                              ]
+                          ),
+                        ),
+                      ]
+                  ),
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                elevation: 10,
+                margin: EdgeInsets.all(10),
+              ),
+            ),
+            Flexible(
+              flex: 3,
+              child: Card(
+                semanticContainer: true,
+                clipBehavior: Clip.antiAliasWithSaveLayer,
+                child: InkWell(
+                  onTap: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => ShopSelectionPage(type: "non_veg")));
+                  },
+                  child: Stack(
+                      children: <Widget>[
+                        Image(
+                          image: AssetImage('assets/meat.jpg'),
+                          fit: BoxFit.cover,
+                          width: MediaQuery.of(context).size.width,
+                          height: 200,
+                        ),
+                        Positioned.fill(
+                          child: Opacity(
+                            opacity: 0.5,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.black,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Positioned.fill(
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Center(
+                                    child: Text(
+                                        "चिकन/मटण",
                                         style: TextStyle(
                                           fontSize: 50,
                                           color: Colors.white,

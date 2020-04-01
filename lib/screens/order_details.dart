@@ -5,7 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class OrderDetailPage extends StatefulWidget {
-  DocumentSnapshot order;
+  final DocumentSnapshot order;
   OrderDetailPage({Key key, this.order}): super(key: key);
   @override
   _OrderDetailPageState createState() => _OrderDetailPageState();
