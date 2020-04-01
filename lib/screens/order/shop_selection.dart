@@ -42,7 +42,7 @@ class _ShopSelectionPageState extends State<ShopSelectionPage> {
                     child: Stack(
                       children: <Widget>[
                         Image(
-                          image: AssetImage(snapshot.data.documents[index]['logo']),
+                          image: NetworkImage(snapshot.data.documents[index]['logo']),
                           fit: BoxFit.cover,
                           width: MediaQuery.of(context).size.width,
                           height: 200,
