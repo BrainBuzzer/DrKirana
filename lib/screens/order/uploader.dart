@@ -44,7 +44,7 @@ class _UploaderState extends State<Uploader> {
     }
     final Geolocator geolocator = Geolocator()..forceAndroidLocationManager;
 
-    FirebaseUser user = await AuthService().getCurrentUID();
+    FirebaseUser user = await AuthService().getCurrentUser();
     Position position = await geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
     Firestore.instance.collection('orders').add({
       'location': {

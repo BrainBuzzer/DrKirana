@@ -1,4 +1,4 @@
-import 'package:dr_kirana/screens/dashboard.dart';
+import 'package:dr_kirana/screens/user/dashboard.dart';
 import 'package:dr_kirana/screens/loginpage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -31,8 +31,13 @@ class AuthService {
     signIn(authCredential);
   }
 
-  Future<FirebaseUser> getCurrentUID() async {
+  Future<FirebaseUser> getCurrentUser() async {
     FirebaseUser user = await FirebaseAuth.instance.currentUser();
     return user;
+  }
+
+  Future<String> getCurrentUID() async {
+    FirebaseUser user = await FirebaseAuth.instance.currentUser();
+    return user.uid;
   }
 }

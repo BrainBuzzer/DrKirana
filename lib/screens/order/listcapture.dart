@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:dr_kirana/screens/uploader.dart';
+import 'package:dr_kirana/screens/order/uploader.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 

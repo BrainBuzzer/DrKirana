@@ -1,6 +1,7 @@
 import 'package:dr_kirana/screens/help.dart';
 import 'package:dr_kirana/screens/order/shop_selection.dart';
-import 'package:dr_kirana/screens/orders_list.dart';
+import 'package:dr_kirana/screens/order/orders_list.dart';
+import 'package:dr_kirana/screens/user/user_profile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -31,6 +32,15 @@ class _DashboardPageState extends State<DashboardPage> {
             ),
             onPressed: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) => OrdersListPage()));
+            },
+          ),
+          IconButton(
+            icon: Icon(
+              Icons.person,
+              color: Colors.black,
+            ),
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => UserProfilePage()));
             },
           )
         ],

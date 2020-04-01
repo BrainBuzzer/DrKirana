@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dr_kirana/screens/order_details.dart';
+import 'package:dr_kirana/screens/order/order_details.dart';
 import 'package:dr_kirana/services/authservice.dart';
 import 'package:flutter/material.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -13,9 +13,9 @@ class _OrdersListPageState extends State<OrdersListPage> {
   String uid;
 
   void initState() {
-    AuthService().getCurrentUID().then((user) {
+    AuthService().getCurrentUID().then((uid) {
       setState(() {
-        uid = user.uid;
+        uid = uid;
       });
     });
     super.initState();
