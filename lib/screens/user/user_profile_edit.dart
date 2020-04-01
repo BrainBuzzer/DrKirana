@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dr_kirana/screens/user/dashboard.dart';
 import 'package:flutter/material.dart';
 
 class UserProfileEditPage extends StatefulWidget {
@@ -17,18 +18,31 @@ class _UserProfileEditPageState extends State<UserProfileEditPage> {
 
   void initState() {
     setState(() {
-      name = widget.doc['name'];
-      address = widget.doc['address'];
+      if(widget.doc != null) {
+        name = widget.doc['name'];
+        address = widget.doc['address'];
+      } else {
+        name = '';
+        address = '';
+      }
     });
     super.initState();
   }
 
   void _submitForm(BuildContext context) {
-    Firestore.instance.collection('users').document(widget.uid).updateData({
-      'name': name,
-      'address': address
-    });
-    Navigator.pop(context);
+    if(widget.doc == null) {
+      Firestore.instance.collection('users').document(widget.uid).setData({
+        'name': name,
+        'address': address
+      });
+      Navigator.push(context, MaterialPageRoute(builder: (context) => DashboardPage()));
+    } else {
+      Firestore.instance.collection('users').document(widget.uid).updateData({
+        'name': name,
+        'address': address
+      });
+      Navigator.pop(context);
+    }
   }
 
   @override

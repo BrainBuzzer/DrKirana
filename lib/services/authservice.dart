@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dr_kirana/screens/user/dashboard.dart';
 import 'package:dr_kirana/screens/loginpage.dart';
+import 'package:dr_kirana/screens/user/user_profile_edit.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -9,7 +11,21 @@ class AuthService {
       stream: FirebaseAuth.instance.onAuthStateChanged,
       builder: (BuildContext context, snapshot) {
         if(snapshot.hasData) {
-          return DashboardPage();
+          return StreamBuilder(
+            stream: Firestore.instance.collection('users').document(snapshot.data.uid).snapshots(),
+            builder: (context, userSnapshot) {
+              if(!userSnapshot.hasData) {
+                return Center(
+                  child: CircularProgressIndicator()
+                );
+              }
+              if(userSnapshot.data.exists) {
+                return DashboardPage();
+              } else {
+                return UserProfileEditPage(uid: snapshot.data.uid);
+              }
+            }
+          );
         }
         else {
           return LoginPage();

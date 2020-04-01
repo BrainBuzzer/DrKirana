@@ -26,6 +26,10 @@ class _UserProfilePageState extends State<UserProfilePage> {
                   );
                 }
 
+                if(!snapshot.data.exists) {
+                  return UserProfileEditPage(uid: uid.data);
+                }
+
                 return Container(
                   width: MediaQuery.of(context).size.width,
                   child: Column(
