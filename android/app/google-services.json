@@ -15,11 +15,80 @@
       },
       "oauth_client": [
         {
-          "client_id": "629641394080-3t02uk3vichlb56qem2pkg7fv0au5v9a.apps.googleusercontent.com",
+          "client_id": "629641394080-sgtsotvg46jo1acciguejsf88fefj7fi.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.hyperlog.dr_kirana",
+            "certificate_hash": "ea5deb6544868bac68bdee23cf8f48b3980f1f4e"
+          }
+        },
+        {
+          "client_id": "629641394080-apnu45p1rumai2k6o7pb1as44btjjvst.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.hyperlog.dr_kirana",
             "certificate_hash": "9b646ebe26a218e3716592bbef8426f381a0b865"
+          }
+        },
+        {
+          "client_id": "629641394080-lqlqgkukeaa9j0g058gsl3nsauoottap.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.hyperlog.dr_kirana",
+            "certificate_hash": "3d6a81ba14b1af484cf317a39550df477943ca4e"
+          }
+        },
+        {
+          "client_id": "629641394080-9jki0comvv0061vlmbsj5pa0joocurfb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAaqhxRs-OXuE7_cwBM6N8yTz6VxjD0nQg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "629641394080-9jki0comvv0061vlmbsj5pa0joocurfb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:629641394080:android:99337bd6b6ec2b1ad196c5",
+        "android_client_info": {
+          "package_name": "com.hyperlog.drkiranashopkeepers"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "629641394080-ap3vk60jvqh29dr8o01au0i3eth0e7c3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.hyperlog.drkiranashopkeepers",
+            "certificate_hash": "ea5deb6544868bac68bdee23cf8f48b3980f1f4e"
+          }
+        },
+        {
+          "client_id": "629641394080-67khnsmj1ltr6l02fkj8dnq60sjg77m3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.hyperlog.drkiranashopkeepers",
+            "certificate_hash": "9b646ebe26a218e3716592bbef8426f381a0b865"
+          }
+        },
+        {
+          "client_id": "629641394080-inc9n6q2aksk9ap4uuh4vubmguqvh64f.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.hyperlog.drkiranashopkeepers",
+            "certificate_hash": "3d6a81ba14b1af484cf317a39550df477943ca4e"
           }
         },
         {
