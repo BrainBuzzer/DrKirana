@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:dr_kirana/services/authservice.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:firebase_storage/firebase_storage.dart';
@@ -112,6 +113,12 @@ class _UploaderState extends State<Uploader> {
     } else {
       return widget.file != null ? FlatButton.icon(
         label: Text('Order this List'),
+        color: Colors.green,
+        padding: EdgeInsets.all(20),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10)
+        ),
+        textColor: Colors.white,
         icon: Icon(Icons.cloud_upload),
         onPressed: _startUpload,
       ) : Container();
