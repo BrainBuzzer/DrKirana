@@ -13,9 +13,9 @@ class _OrdersListPageState extends State<OrdersListPage> {
   String uid;
 
   void initState() {
-    AuthService().getCurrentUID().then((uid) {
+    AuthService().getCurrentUID().then((id) {
       setState(() {
-        uid = uid;
+        uid = id;
       });
     });
     super.initState();
@@ -23,6 +23,10 @@ class _OrdersListPageState extends State<OrdersListPage> {
 
   @override
   Widget build(BuildContext context) {
+    if(uid == null)
+      return Center(
+        child: CircularProgressIndicator()
+      );
     return Scaffold(
       appBar: new AppBar(
         title: new Text('Previous Orders'),
