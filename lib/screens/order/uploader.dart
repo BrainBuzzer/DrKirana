@@ -31,25 +31,33 @@ class _UploaderState extends State<Uploader> {
   }
 
   Future<void> _storeOrder() async {
+    FirebaseUser user = await AuthService().getCurrentUser();
+    Geolocator geolocator = Geolocator()..forceAndroidLocationManager = true;
+
     PermissionStatus permission = await LocationPermissions().checkPermissionStatus();
     if(permission != PermissionStatus.granted) {
       permission = await LocationPermissions().requestPermissions();
     }
 
+    Position position;
+
     ServiceStatus serviceStatus = await LocationPermissions().checkServiceStatus();
     if(serviceStatus != ServiceStatus.enabled) {
+      DocumentSnapshot doc = await Firestore.instance.collection('users').document(user.uid).get();
+      List<Placemark> placemark = await Geolocator().placemarkFromAddress(doc.data['address']);
+      position = placemark[0].position;
       setState(() {
         locationService = false;
       });
+    } else {
+       position = await geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
     }
-    final Geolocator geolocator = Geolocator()..forceAndroidLocationManager;
 
-    FirebaseUser user = await AuthService().getCurrentUser();
-    Position position = await geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
     Firestore.instance.collection('orders').add({
       'location': {
         'latitude': position.latitude,
-        'longitude': position.longitude
+        'longitude': position.longitude,
+        'isAccurate': locationService ? true : false
       },
       'uid': user.uid,
       'phone_number': user.phoneNumber,
@@ -80,18 +88,6 @@ class _UploaderState extends State<Uploader> {
               padding: EdgeInsets.all(16.0),
               child: Column(
                 children: <Widget>[
-                  if(!locationService)
-                    Center(
-                      child: Text(
-                        'TURN ON LOCATION TO PLACE ORDER',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.red,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20
-                        )
-                      )
-                    ),
                   if(_uploadTask.isComplete)
                     Center(
                       child: Text(
