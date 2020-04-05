@@ -2,6 +2,7 @@ import 'package:dr_kirana/screens/help.dart';
 import 'package:dr_kirana/screens/order/shop_selection.dart';
 import 'package:dr_kirana/screens/order/orders_list.dart';
 import 'package:dr_kirana/screens/user/user_profile.dart';
+import 'package:dr_kirana/services/firebase_notification.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -11,6 +12,12 @@ class DashboardPage extends StatefulWidget {
 }
 
 class _DashboardPageState extends State<DashboardPage> {
+  @override
+  void initState() {
+    super.initState();
+    new FirebaseNotifications().setUpNotifications();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
