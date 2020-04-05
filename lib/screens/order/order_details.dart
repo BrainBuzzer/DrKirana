@@ -98,6 +98,21 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                         ),
                       ),
                     ),
+                    if(orderSnapshot.data['status'] == 'placed')
+                      Padding(
+                          padding: EdgeInsets.all(8),
+                          child: Card(
+                            elevation: 3,
+                            color: Colors.red,
+                            child: ListTile(
+                                title: Text("Cancel this order", style: TextStyle(color: Colors.white)),
+                                leading: Icon(Icons.shopping_cart, color: Colors.white),
+                                onTap: () {
+                                  _cancelOrder(orderSnapshot.data);
+                                },
+                            ),
+                          )
+                      ),
                   ],
                 );
               }
@@ -174,7 +189,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
             )
         );
         break;
-      case 'delivered':
+      case 'completed':
         return Padding(
             padding: EdgeInsets.all(8),
             child: Card(
@@ -199,5 +214,14 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
         );
         break;
     }
+  }
+
+  void _cancelOrder(DocumentSnapshot order) async {
+    Firestore.instance.runTransaction((transaction) async {
+      DocumentSnapshot freshSnap = await transaction.get(order.reference);
+      await transaction.update(freshSnap.reference, {
+        'status': 'cancelled'
+      });
+    });
   }
 }
