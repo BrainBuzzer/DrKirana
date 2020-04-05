@@ -3,7 +3,6 @@ import 'package:dr_kirana/screens/order/shop_selection.dart';
 import 'package:dr_kirana/screens/order/orders_list.dart';
 import 'package:dr_kirana/screens/user/user_profile.dart';
 import 'package:dr_kirana/services/firebase_notification.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class DashboardPage extends StatefulWidget {
@@ -12,6 +11,13 @@ class DashboardPage extends StatefulWidget {
 }
 
 class _DashboardPageState extends State<DashboardPage> {
+  int _currentIndex = 0;
+  final List<Widget> _children = [
+    UserPage(),
+    OrdersListPage(),
+    UserProfilePage()
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -31,28 +37,48 @@ class _DashboardPageState extends State<DashboardPage> {
         backgroundColor: Colors.white,
         elevation: 10,
         centerTitle: true,
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(
-              Icons.shopping_cart,
-              color: Colors.black,
-            ),
-            onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => OrdersListPage()));
-            },
+      ),
+      body: this._children[this._currentIndex],
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => HelpPage()));
+        },
+        child: Icon(
+          Icons.help_outline
+        ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currentIndex,
+        onTap: onTabTapped,
+        items: [
+          new BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            title: Text("Home")
           ),
-          IconButton(
-            icon: Icon(
-              Icons.person,
-              color: Colors.black,
-            ),
-            onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => UserProfilePage()));
-            },
+          new BottomNavigationBarItem(
+            icon: Icon(Icons.shopping_cart),
+            title: Text("All Orders")
+          ),
+          new BottomNavigationBarItem(
+              icon: Icon(Icons.person),
+              title: Text("Profile")
           )
         ],
       ),
-      body: new Center(
+    );
+  }
+
+  void onTabTapped(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+  }
+}
+
+class UserPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return new Center(
         child: new Column(
           children: <Widget>[
             Flexible(
@@ -229,15 +255,7 @@ class _DashboardPageState extends State<DashboardPage> {
             ),
           ],
         )
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => HelpPage()));
-        },
-        child: Icon(
-          Icons.help_outline
-        ),
-      ),
     );
   }
 }
+

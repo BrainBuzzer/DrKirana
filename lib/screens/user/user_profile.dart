@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dr_kirana/screens/user/user_profile_edit.dart';
 import 'package:dr_kirana/services/authservice.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class UserProfilePage extends StatefulWidget {
@@ -12,9 +11,7 @@ class UserProfilePage extends StatefulWidget {
 class _UserProfilePageState extends State<UserProfilePage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: new AppBar(title: Text("Your Profile")),
-      body: FutureBuilder(
+    return FutureBuilder(
         future: AuthService().getCurrentUID(),
         builder: (context, uid) {
           return StreamBuilder(
@@ -57,7 +54,6 @@ class _UserProfilePageState extends State<UserProfilePage> {
               }
           );
         }
-      )
     );
   }
 }

@@ -30,7 +30,9 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
             return StreamBuilder(
               stream: Firestore.instance.collection('shops').document(orderSnapshot.data['shop']).snapshots(),
               builder: (context, shopSnapshot) {
-                return Column(
+                return ListView(
+                  scrollDirection: Axis.vertical,
+                  itemExtent: 3,
                   children: <Widget>[
                     _conditionalWidget(orderSnapshot.data['status']),
                     Padding(

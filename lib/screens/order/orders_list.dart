@@ -27,11 +27,7 @@ class _OrdersListPageState extends State<OrdersListPage> {
       return Center(
         child: CircularProgressIndicator()
       );
-    return Scaffold(
-      appBar: new AppBar(
-        title: new Text('Previous Orders'),
-      ),
-      body: StreamBuilder(
+    return StreamBuilder(
         stream: Firestore.instance.collection('orders').where('uid', isEqualTo: uid).orderBy('time_order_placed', descending: true).snapshots(),
         builder: (context, snapshot) {
           if(!snapshot.hasData)
@@ -64,7 +60,6 @@ class _OrdersListPageState extends State<OrdersListPage> {
             }
           );
         }
-      )
     );
   }
 }
