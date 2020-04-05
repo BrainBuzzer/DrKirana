@@ -1,12 +1,11 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dr_kirana/services/firebasestorageservice.dart';
+import 'package:dr_kirana/screens/order/image_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class OrderDetailPage extends StatefulWidget {
-  final DocumentSnapshot order;
-  OrderDetailPage({Key key, this.order}): super(key: key);
+  final String orderId;
+  OrderDetailPage({Key key, this.orderId}): super(key: key);
   @override
   _OrderDetailPageState createState() => _OrderDetailPageState();
 }
@@ -16,81 +15,189 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: new AppBar(
-            title: new Text("ऑर्डर माहिती")
+            title: new Text("Order Details")
         ),
-        body: Padding(
-            padding: EdgeInsets.all(16.0),
-            child: Column(
-              children: <Widget>[
-                Flexible(
-                  flex: 3,
-                  child: FutureBuilder(
-                    future: _getImage(context, widget.order['image']),
-                    builder: (context, snapshot) {
-                      if(snapshot.connectionState == ConnectionState.done)
-                        return Container(
-                          height: MediaQuery.of(context).size.height/1.25,
-                          width: MediaQuery.of(context).size.width/1.25,
-                          child: snapshot.data,
-                        );
-
-                      if(snapshot.connectionState == ConnectionState.waiting)
-                        return CircularProgressIndicator();
-
-                      return Container();
-                    },
-                  ),
-                ),
-                Flexible(
-                  flex: 1,
-                  child: ListView(
-                    padding: const EdgeInsets.all(8),
-                    children: <Widget>[
-                      Container(
-                        height: 50,
-                        color: Colors.amber[600],
-                        child: Center(child: Text(widget.order['type'])),
+        body: StreamBuilder(
+          stream: Firestore.instance.collection('orders').document(widget.orderId).snapshots(),
+          builder: (context, orderSnapshot) {
+            if(!orderSnapshot.hasData) {
+              return Container(
+                child: Center(
+                  child: CircularProgressIndicator()
+                )
+              );
+            }
+            return StreamBuilder(
+              stream: Firestore.instance.collection('shops').document(orderSnapshot.data['shop']).snapshots(),
+              builder: (context, shopSnapshot) {
+                return Column(
+                  children: <Widget>[
+                    _conditionalWidget(orderSnapshot.data['status']),
+                    Padding(
+                      padding: EdgeInsets.all(8),
+                      child: Card(
+                        elevation: 3,
+                        child: Column(
+                          children: [
+                            ListTile(
+                              title: Text(shopSnapshot.data['name'],
+                                  style: TextStyle(fontWeight: FontWeight.w500)),
+                              subtitle: Text(shopSnapshot.data['address']),
+                              leading: Icon(
+                                Icons.business,
+                                color: Colors.blue[500],
+                              ),
+                            ),
+                            Divider(),
+                            orderSnapshot.data['status'] == 'completed'
+                                || orderSnapshot.data['status'] == 'out_for_delivery'
+                                ? ListTile(
+                                title: Text("View Receipt",
+                                    style: TextStyle(fontWeight: FontWeight.w500)),
+                                leading: Icon(
+                                    Icons.receipt,
+                                    color: Colors.blue[500]
+                                ),
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              ImageView(
+                                                  imageLocation: orderSnapshot.data['receipt'])
+                                      )
+                                  );
+                                }
+                            ) : Container(),
+                            ListTile(
+                                title: Text("View the order",),
+                                leading: Icon(
+                                    Icons.image,
+                                    color: Colors.blue[500]
+                                ),
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              ImageView(
+                                                  imageLocation: orderSnapshot.data['image'])
+                                      )
+                                  );
+                                }
+                            ),
+                            ListTile(
+                              title: Text(shopSnapshot.data['phone_number']),
+                              leading: Icon(
+                                Icons.contact_phone,
+                                color: Colors.blue[500],
+                              ),
+//                              onTap: () { _callUser(orderSnapshot.data['phone_number']); },
+                            ),
+                          ],
+                        ),
                       ),
-                      Container(
-                        height: 50,
-                        color: Colors.amber[500],
-                        child: Center(child: Text(widget.order['time_order_placed'].toDate().toString())),
-                      ),
-                      StreamBuilder(
-                        stream: Firestore.instance.collection('shops').document(widget.order['shop']).snapshots(),
-                        builder: (context, snapshot) {
-                          print(snapshot);
-                          if(!snapshot.hasData)
-                            return new Text("Loading Shop Details");
-
-                          return new Container(
-                              height: 50,
-                              color: Colors.amber[400],
-                              child: Center(child: Text(snapshot.data['name']))
-                          );
-                        },
-                      )
-                    ],
-                  ),
-                ),
-              ],
-            )
+                    ),
+                  ],
+                );
+              }
+            );
+          }
         )
     );
   }
 
-  Future<Widget> _getImage(BuildContext context, String image) async {
-    CachedNetworkImage m;
-    await FireStorageService.loadImage(context, image).then((downloadUrl) {
-      m = CachedNetworkImage(
-        imageUrl: downloadUrl.toString(),
-        placeholder: (context, url) => Container(
-          child: Center(
-            child: CircularProgressIndicator(),
-          )
-        ),
-      );
-    });
-    return m;
+  Widget _conditionalWidget(String status) {
+    switch(status) {
+      case 'placed':
+        return Padding(
+            padding: EdgeInsets.all(8),
+            child: Card(
+                elevation: 3,
+                color: Colors.blue,
+                child: ListTile(
+                  title: Text("Order Placed", style: TextStyle(color: Colors.white)),
+                  leading: Icon(Icons.shopping_cart, color: Colors.white)
+                ),
+            )
+        );
+        break;
+      case 'processing':
+        return Padding(
+            padding: EdgeInsets.all(8),
+            child: Card(
+              elevation: 3,
+              color: Colors.lightGreen,
+              child: ListTile(
+                  title: Text("Shopkeeper is processing your order.", style: TextStyle(color: Colors.white)),
+                  leading: Icon(Icons.timer, color: Colors.white)
+              ),
+            )
+        );
+        break;
+      case 'out_for_delivery':
+        return Padding(
+            padding: EdgeInsets.all(8),
+            child: Card(
+              elevation: 3,
+              color: Colors.green,
+              child: ListTile(
+                  title: Text("Your order is out for delivery.", style: TextStyle(color: Colors.white)),
+                  leading: Icon(Icons.directions_walk, color: Colors.white)
+              ),
+            )
+        );
+        break;
+      case 'cancelled':
+        return Padding(
+            padding: EdgeInsets.all(8),
+            child: Card(
+              elevation: 3,
+              color: Colors.red,
+              child: ListTile(
+                  title: Text("You have cancelled the order.", style: TextStyle(color: Colors.white)),
+                  leading: Icon(Icons.cancel, color: Colors.white)
+              ),
+            )
+        );
+        break;
+      case 'declined':
+        return Padding(
+            padding: EdgeInsets.all(8),
+            child: Card(
+              elevation: 3,
+              color: Colors.red,
+              child: ListTile(
+                  title: Text("Shopkeeper has declined your order.", style: TextStyle(color: Colors.white)),
+                  leading: Icon(Icons.cancel, color: Colors.white)
+              ),
+            )
+        );
+        break;
+      case 'delivered':
+        return Padding(
+            padding: EdgeInsets.all(8),
+            child: Card(
+              elevation: 3,
+              color: Colors.green,
+              child: ListTile(
+                  title: Text("Your order has been delivered successfully!", style: TextStyle(color: Colors.white)),
+                  leading: Icon(Icons.check_circle_outline, color: Colors.white)
+              ),
+            )
+        );
+        break;
+      default:
+        return Padding(
+            padding: EdgeInsets.all(8),
+            child: Card(
+                elevation: 3,
+                child: ListTile(
+                  title: Text("Something went wrong."),
+                )
+            )
+        );
+        break;
+    }
   }
 }

@@ -56,7 +56,7 @@ class _OrdersListPageState extends State<OrdersListPage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => OrderDetailPage(order: snapshot.data.documents[index])
+                      builder: (context) => OrderDetailPage(orderId: snapshot.data.documents[index].documentID)
                     )
                   );
                 }
