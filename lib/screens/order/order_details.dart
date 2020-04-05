@@ -27,12 +27,17 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                 )
               );
             }
-            return StreamBuilder(
+            return new StreamBuilder(
               stream: Firestore.instance.collection('shops').document(orderSnapshot.data['shop']).snapshots(),
               builder: (context, shopSnapshot) {
-                return ListView(
-                  scrollDirection: Axis.vertical,
-                  itemExtent: 3,
+                if(shopSnapshot.data == null) {
+                  return Container(
+                      child: Center(
+                          child: CircularProgressIndicator()
+                      )
+                  );
+                }
+                return Column(
                   children: <Widget>[
                     _conditionalWidget(orderSnapshot.data['status']),
                     Padding(

@@ -48,6 +48,7 @@ class _OrdersListPageState extends State<OrdersListPage> {
                 subtitle: new Text(
                   timeago.format(snapshot.data.documents[index]['time_order_placed'].toDate())
                 ),
+                trailing: conditionalWidget(snapshot.data.documents[index]['status']),
                 onTap: () {
                   Navigator.push(
                     context,
@@ -61,5 +62,86 @@ class _OrdersListPageState extends State<OrdersListPage> {
           );
         }
     );
+  }
+
+  Widget conditionalWidget(String status) {
+    switch(status) {
+      case 'placed': {
+        return Container(
+            padding: EdgeInsets.all(10),
+            decoration: new BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.lightBlue
+            ),
+            child: Icon(Icons.timer, color: Colors.white)
+        );
+      }
+      break;
+      case 'processing': {
+        return Container(
+            padding: EdgeInsets.all(10),
+            decoration: new BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.yellow
+            ),
+            child: Icon(Icons.departure_board)
+        );
+      }
+      break;
+      case 'out_for_delivery': {
+        return Container(
+            padding: EdgeInsets.all(10),
+            decoration: new BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.greenAccent
+            ),
+            child: Icon(Icons.directions_walk)
+        );
+      }
+      break;
+      case 'declined': {
+        return Container(
+            padding: EdgeInsets.all(10),
+            decoration: new BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.red
+            ),
+            child: Icon(Icons.clear, color: Colors.white)
+        );
+      }
+      case 'cancelled': {
+        return Container(
+            padding: EdgeInsets.all(10),
+            decoration: new BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.orange
+            ),
+            child: Icon(Icons.event_busy, color: Colors.white)
+        );
+      }
+      break;
+      case 'completed': {
+        return Container(
+            padding: EdgeInsets.all(10),
+            decoration: new BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.green
+            ),
+            child: Icon(Icons.check_circle_outline, color: Colors.white,)
+        );
+      }
+      break;
+      default: {
+        return Container(
+            padding: EdgeInsets.all(10),
+            decoration: new BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.redAccent
+            ),
+            child: Icon(Icons.warning)
+        );
+      }
+      break;
+    }
   }
 }
