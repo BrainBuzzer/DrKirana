@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dr_kirana/screens/order/image_view.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/material.dart';
 
 class OrderDetailPage extends StatefulWidget {
@@ -56,26 +56,6 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                               ),
                             ),
                             Divider(),
-                            orderSnapshot.data['status'] == 'completed'
-                                || orderSnapshot.data['status'] == 'out_for_delivery'
-                                ? ListTile(
-                                title: Text("View Receipt",
-                                    style: TextStyle(fontWeight: FontWeight.w500)),
-                                leading: Icon(
-                                    Icons.receipt,
-                                    color: Colors.blue[500]
-                                ),
-                                onTap: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              ImageView(
-                                                  imageLocation: orderSnapshot.data['receipt'])
-                                      )
-                                  );
-                                }
-                            ) : Container(),
                             ListTile(
                                 title: Text("View the order",),
                                 leading: Icon(
@@ -99,12 +79,38 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                                 Icons.contact_phone,
                                 color: Colors.blue[500],
                               ),
-//                              onTap: () { _callUser(orderSnapshot.data['phone_number']); },
+                              onTap: () { _callUser(orderSnapshot.data['phone_number']); },
                             ),
                           ],
                         ),
                       ),
                     ),
+                    if(orderSnapshot.data['status'] == 'completed' || orderSnapshot.data['status'] == 'out_for_delivery')
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Card(
+                          elevation: 3,
+                          color: Colors.blue,
+                          child: ListTile(
+                            title: Text("View Receipt",
+                                style: TextStyle(fontWeight: FontWeight.w500, color: Colors.white)),
+                            leading: Icon(
+                                Icons.receipt,
+                                color: Colors.white
+                            ),
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          ImageView(
+                                              imageLocation: orderSnapshot.data['receipt'])
+                                  )
+                              );
+                            }
+                    ),
+                        ),
+                      ),
                     if(orderSnapshot.data['status'] == 'placed')
                       Padding(
                           padding: EdgeInsets.all(8),
@@ -220,6 +226,15 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
             )
         );
         break;
+    }
+  }
+
+  _callUser(phoneNumber) async {
+    String url = 'tel:$phoneNumber';
+    if(await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw "Could not launch $url";
     }
   }
 
