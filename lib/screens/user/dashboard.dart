@@ -206,12 +206,12 @@ class UserPage extends StatelessWidget {
                 clipBehavior: Clip.antiAliasWithSaveLayer,
                 child: InkWell(
                   onTap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => ShopSelectionPage(type: "non_veg")));
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => ShopSelectionPage(type: "fruits")));
                   },
                   child: Stack(
                       children: <Widget>[
                         Image(
-                          image: AssetImage('assets/meat.jpg'),
+                          image: AssetImage('assets/fruits.jpg'),
                           fit: BoxFit.cover,
                           width: MediaQuery.of(context).size.width,
                           height: 200,
@@ -232,7 +232,7 @@ class UserPage extends StatelessWidget {
                               children: <Widget>[
                                 Center(
                                     child: Text(
-                                        "चिकन/मटण",
+                                        "फळे",
                                         style: TextStyle(
                                           fontSize: 50,
                                           color: Colors.white,
