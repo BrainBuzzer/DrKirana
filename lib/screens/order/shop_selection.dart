@@ -20,7 +20,7 @@ class _ShopSelectionPageState extends State<ShopSelectionPage> {
         title: Text("Select Shop")
       ),
       body: new StreamBuilder(
-        stream: Firestore.instance.collection('shops').where('type', arrayContains: widget.type).snapshots(),
+        stream: Firestore.instance.collection('shops').where('city', isEqualTo: "Latur").where('type', arrayContains: widget.type).snapshots(),
         builder: (context, snapshot) {
           if(!snapshot.hasData)
           return Container(
