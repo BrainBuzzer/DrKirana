@@ -21,6 +21,20 @@ class HelpPage extends StatelessWidget {
               ),
             )
           ),
+          Center(
+            child: Card(
+              elevation: 3,
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Text(
+                  "If you want to get your shop registered on this app, please click on the call button. We'd love to have you onboard.",
+                  style: TextStyle(
+                    fontSize: 20
+                  ),
+                ),
+              ),
+            )
+          ),
           RaisedButton(
             onPressed: _email,
             child: new Text('Email'),
@@ -42,7 +56,7 @@ class HelpPage extends StatelessWidget {
   }
 
   _call() async {
-    const url = 'tel:+919130460885';
+    const url = 'tel:+919637305012';
     if(await canLaunch(url)) {
       await(launch(url));
     }
