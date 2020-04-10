@@ -14,16 +14,18 @@ class UserProfileEditPage extends StatefulWidget {
 class _UserProfileEditPageState extends State<UserProfileEditPage> {
   final _formKey = GlobalKey<FormState>();
 
-  String name, address;
+  String name, address, city;
 
   void initState() {
     setState(() {
       if(widget.doc != null) {
         name = widget.doc['name'];
         address = widget.doc['address'];
+        city = widget.doc['city'];
       } else {
         name = '';
         address = '';
+        city = "Latur";
       }
     });
     super.initState();
@@ -33,13 +35,15 @@ class _UserProfileEditPageState extends State<UserProfileEditPage> {
     if(widget.doc == null) {
       Firestore.instance.collection('users').document(widget.uid).setData({
         'name': name,
-        'address': address
+        'address': address + ' ' + city,
+        'city': city,
       });
       Navigator.push(context, MaterialPageRoute(builder: (context) => DashboardPage()));
     } else {
       Firestore.instance.collection('users').document(widget.uid).updateData({
         'name': name,
-        'address': address
+        'address': address + ' ' + city,
+        'city': city
       });
       Navigator.pop(context);
     }
@@ -108,6 +112,22 @@ class _UserProfileEditPageState extends State<UserProfileEditPage> {
                             this.address = val;
                           });
                         })),
+                Padding(
+                    padding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+                    child: DropdownButton<String>(
+                      value: this.city,
+                      elevation: 5,
+                      isExpanded: true,
+                      items: [
+                        DropdownMenuItem(child: Text("Latur"), value: "Latur"),
+                      ],
+                      onChanged: (value) {
+                        setState(() {
+                          this.city = value;
+                        });
+                      },
+                    )),
+
                 RaisedButton.icon(
                   onPressed: () {
                     if (_formKey.currentState.validate()) {
