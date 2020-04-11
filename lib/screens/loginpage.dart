@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pinput/pin_put/pin_put.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -121,12 +122,41 @@ class _LoginPageState extends State<LoginPage> {
                     codeSent ? AuthService().signInWithOTP(smsCode, verificationId) : verifyPhone(phoneNo);
                   },
                 ),
-              ) : Container()
+              ) : Container(),
+              Padding(
+                padding: EdgeInsets.all(25.0),
+                child: Center(
+                  child: Column(
+                    children: <Widget>[
+                      Text(
+                        "आपण दुकानदार आहात का? आत्ताच संपर्क करा.",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20
+                        ),
+                      ),
+                      RaisedButton.icon(
+                          color: Colors.blue,
+                          onPressed: _callNumber,
+                          icon: Icon(Icons.call, color: Colors.white),
+                          label: Text("संपर्क साधा", style: TextStyle(color: Colors.white))
+                      )
+                    ]
+                  ),
+                )
+              )
             ]
           )
         ),
       )
     );
+  }
+
+  _callNumber() async {
+    String url = "tel:+919637305012";
+    if(await canLaunch(url)) {
+      launch(url);
+    }
   }
   
   Future<void> verifyPhone(phoneNo) async {

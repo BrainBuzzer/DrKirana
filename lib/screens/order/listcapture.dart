@@ -71,10 +71,9 @@ class _ListCapturePageState extends State<ListCapturePage> {
                         ),
                       ),
                     ),
-                    RaisedButton.icon(
-                      label: Text("दुकानाची परत निवड करा"),
+                    FlatButton.icon(
+                      label: Text("दुसरे दुकान निवडा"),
                       icon: Icon(Icons.arrow_back),
-                      color: Colors.white,
                       onPressed: () {
                         Navigator.pop(context);
                       }
