@@ -98,7 +98,7 @@ class _ShopSelectionPageState extends State<ShopSelectionPage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => ListCapturePage(type: widget.type, shop: snapshot.data.documents[index].documentID)
+                          builder: (context) => ListCapturePage(type: widget.type, shop: snapshot.data.documents[index].documentID, note: snapshot.data.documents[index]["note"])
                         )
                       );
                     }

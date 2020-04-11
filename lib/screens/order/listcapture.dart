@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ListCapturePage extends StatefulWidget {
-  final String type, shop;
+  final String type, shop, note;
 
-  ListCapturePage ({ Key key, this.type, this.shop }) : super(key: key);
+  ListCapturePage ({ Key key, @required this.type, @required this.shop, @required this.note }) : super(key: key);
 
   @override
   _ListCapturePageState createState() => _ListCapturePageState();
@@ -35,23 +35,52 @@ class _ListCapturePageState extends State<ListCapturePage> {
           child:  Column(
             children: <Widget>[
               _imageFile == null
-                ? Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  RaisedButton.icon(
-                    label: Text("Capture List"),
-                    icon: Icon(Icons.camera_alt),
-                    onPressed: _captureImage,
+                ? Center(
+                  child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Card(
+                        elevation: 5,
+                        child: Column(
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: ListTile(
+                                leading: Icon(Icons.info, color: Colors.blue),
+                                title: Text(
+                                  widget.note,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Container(
+                              color: Colors.green,
+                              child: ListTile(
+                                title: Text("आपल्या यादीची फोटो काढा", style: TextStyle(color: Colors.white),),
+                                leading: Icon(Icons.camera_alt, color: Colors.white,),
+                                onTap: _captureImage,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    RaisedButton.icon(
+                      label: Text("दुकानाची परत निवड करा"),
+                      icon: Icon(Icons.arrow_back),
+                      color: Colors.white,
+                      onPressed: () {
+                        Navigator.pop(context);
+                      }
+                    ),
+                  ]
                   ),
-                  RaisedButton.icon(
-                    label: Text("Select Shop Again"),
-                    icon: Icon(Icons.arrow_back),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    }
-                  ),
-                ]
                 ) : Container(
                   child: Image.file(
                     _imageFile,
