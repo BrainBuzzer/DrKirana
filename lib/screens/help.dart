@@ -1,9 +1,12 @@
+import 'package:facebook_app_events/facebook_app_events.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class HelpPage extends StatelessWidget {
+  static final facebookAppEvents = FacebookAppEvents();
   @override
   Widget build(BuildContext context) {
+    facebookAppEvents.logEvent(name: "access_help_page");
     return Scaffold(
       appBar: new AppBar(
         title: new Text("Dr Kirana")

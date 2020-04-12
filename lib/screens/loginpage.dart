@@ -1,4 +1,5 @@
 import 'package:dr_kirana/services/authservice.dart';
+import 'package:facebook_app_events/facebook_app_events.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +13,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final formKey = new GlobalKey<FormState>();
+  static final facebookAppEvents = FacebookAppEvents();
 
   String phoneNo, verificationId, smsCode;
 
@@ -154,6 +156,7 @@ class _LoginPageState extends State<LoginPage> {
 
   _callNumber() async {
     String url = "tel:+919637305012";
+    facebookAppEvents.logEvent(name: "callHomeNumber");
     if(await canLaunch(url)) {
       launch(url);
     }
