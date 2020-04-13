@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:dr_kirana/screens/order/uploader.dart';
+import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:flutter/material.dart';
 
 import 'package:image_picker/image_picker.dart';
@@ -16,11 +17,65 @@ class ListCapturePage extends StatefulWidget {
 class _ListCapturePageState extends State<ListCapturePage> {
   File _imageFile;
 
-  Future<void> _captureImage() async {
+  Future<File> _checkIfPaper(File image, BuildContext context) async {
+    final FirebaseVisionImage visionImage = FirebaseVisionImage.fromFile(image);
+    final ImageLabeler labeler = FirebaseVision.instance.imageLabeler(
+      ImageLabelerOptions(confidenceThreshold: 0.7)
+    );
+    final List<ImageLabel> labels = await labeler.processImage(visionImage);
+
+    for (ImageLabel label in labels) {
+      if(label.text == 'Paper') {
+        return image;
+      } else {
+        showAlertDialog(context);
+      }
+    }
+  }
+
+  showAlertDialog(BuildContext context) {
+
+    // set up the buttons
+    Widget cancelButton = FlatButton(
+      child: Text("Cancel"),
+      onPressed:  () {
+        Navigator.pop(context);
+      },
+    );
+    Widget continueButton = FlatButton(
+      child: Text("पुन्हा प्रयत्न करा"),
+      onPressed:  () {
+        Navigator.pop(context);
+        _captureImage(context);
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("ERROR"),
+      content: Text("आपण वापरलेल्या फोटोमध्ये यादी दिसून येत नाही. कृपया पुन्हा प्रयत्न करा."),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
+  Future<void> _captureImage(BuildContext context) async {
     File selected = await ImagePicker.pickImage(source: ImageSource.camera, imageQuality: 50);
 
+    File image = await _checkIfPaper(selected, context);
+
     setState(() {
-      _imageFile = selected;
+      _imageFile = image;
     });
   }
 
@@ -64,7 +119,9 @@ class _ListCapturePageState extends State<ListCapturePage> {
                               child: ListTile(
                                 title: Text("आपल्या यादीची फोटो काढा", style: TextStyle(color: Colors.white),),
                                 leading: Icon(Icons.camera_alt, color: Colors.white,),
-                                onTap: _captureImage,
+                                onTap: () {
+                                  _captureImage(context);
+                                },
                               ),
                             ),
                           ],
