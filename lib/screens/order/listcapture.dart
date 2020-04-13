@@ -20,6 +20,7 @@ class _ListCapturePageState extends State<ListCapturePage> {
   // ignore: missing_return
   Future<File> _checkIfPaper(File image, BuildContext context) async {
     final FirebaseVisionImage visionImage = FirebaseVisionImage.fromFile(image);
+    bool status;
     final ImageLabeler labeler = FirebaseVision.instance.imageLabeler(
       ImageLabelerOptions(confidenceThreshold: 0.65)
     );
@@ -27,11 +28,13 @@ class _ListCapturePageState extends State<ListCapturePage> {
 
     for (ImageLabel label in labels) {
       if(label.text == 'Paper') {
-        return image;
+        status = true;
       } else {
-        showAlertDialog(context);
+        status = false;
       }
     }
+
+    return status ? image : showAlertDialog(context);
   }
 
   showAlertDialog(BuildContext context) {
