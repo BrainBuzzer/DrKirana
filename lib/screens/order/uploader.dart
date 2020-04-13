@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:location_permissions/location_permissions.dart';
 
 class Uploader extends StatefulWidget {
   final File file;
@@ -37,32 +36,16 @@ class _UploaderState extends State<Uploader> {
 
   Future<void> _storeOrder() async {
     FirebaseUser user = await AuthService().getCurrentUser();
-    Geolocator geolocator = Geolocator()..forceAndroidLocationManager = true;
-
-    PermissionStatus permission = await LocationPermissions().checkPermissionStatus();
-    if(permission != PermissionStatus.granted) {
-      permission = await LocationPermissions().requestPermissions();
-    }
-
     Position position;
 
-    ServiceStatus serviceStatus = await LocationPermissions().checkServiceStatus();
-    if(serviceStatus != ServiceStatus.enabled) {
-      DocumentSnapshot doc = await Firestore.instance.collection('users').document(user.uid).get();
-      List<Placemark> placemark = await Geolocator().placemarkFromAddress(doc.data['address']);
-      position = placemark[0].position;
-      setState(() {
-        locationService = false;
-      });
-    } else {
-       position = await geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
-    }
+    DocumentSnapshot doc = await Firestore.instance.collection('users').document(user.uid).get();
+    List<Placemark> placemark = await Geolocator().placemarkFromAddress(doc.data['address']);
+    position = placemark[0].position;
 
     Firestore.instance.collection('orders').add({
       'location': {
         'latitude': position.latitude,
         'longitude': position.longitude,
-        'isAccurate': locationService ? true : false
       },
       'uid': user.uid,
       'phone_number': user.phoneNumber,
