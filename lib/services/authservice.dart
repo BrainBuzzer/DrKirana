@@ -3,11 +3,13 @@ import 'package:dr_kirana/screens/user/dashboard.dart';
 import 'package:dr_kirana/screens/loginpage.dart';
 import 'package:dr_kirana/screens/user/user_profile_edit.dart';
 import 'package:facebook_app_events/facebook_app_events.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class AuthService {
   static final facebookAppEvents = FacebookAppEvents();
+  static final FirebaseAnalytics analytics = FirebaseAnalytics();
   handleAuth() {
     return StreamBuilder(
       stream: FirebaseAuth.instance.onAuthStateChanged,
@@ -23,9 +25,11 @@ class AuthService {
               }
               if(userSnapshot.data.exists) {
                 facebookAppEvents.logEvent(name: "user_signed_in");
+                analytics.logLogin();
                 return DashboardPage();
               } else {
                 facebookAppEvents.logEvent(name: "user_signed_up");
+                analytics.logLogin();
                 return UserProfileEditPage(uid: snapshot.data.uid);
               }
             }

@@ -1,5 +1,7 @@
 import 'dart:io';
 import 'package:dr_kirana/services/authservice.dart';
+import 'package:facebook_app_events/facebook_app_events.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +21,8 @@ class Uploader extends StatefulWidget {
 
 class _UploaderState extends State<Uploader> {
   final FirebaseStorage _storage = FirebaseStorage(storageBucket: 'gs://dr-kirana-final.appspot.com/');
+  final FirebaseAnalytics analytics = FirebaseAnalytics();
+  static final FacebookAppEvents facebookAppEvents = FacebookAppEvents();
   String filePath;
   bool orderPlaced = false, locationService = true;
   StorageUploadTask _uploadTask;
@@ -68,6 +72,21 @@ class _UploaderState extends State<Uploader> {
       'time_order_placed': DateTime.now(),
       'shop': widget.shop,
     });
+
+    facebookAppEvents.logEvent(
+      name: "user_order_placed",
+      parameters: {
+        "time_order_placed": DateTime.now(),
+        "shop": widget.shop,
+        "uid": user.uid,
+      }
+    );
+
+    await analytics.logEcommercePurchase(
+      origin: widget.type,
+      currency: "INR"
+    );
+
     setState(() {
       orderPlaced = true;
     });
