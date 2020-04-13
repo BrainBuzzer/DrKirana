@@ -45,7 +45,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                         onPressed: () {
                           Navigator.push(context, MaterialPageRoute(builder: (context) => UserProfileEditPage(doc: snapshot.data, uid: uid.data)));
                         },
-                        label: Text("Edit Profile Info"),
+                        label: Text("माहिती बदल करा"),
                         icon: Icon(Icons.edit)
                       )
                     ],

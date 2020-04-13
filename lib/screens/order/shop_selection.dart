@@ -17,7 +17,7 @@ class _ShopSelectionPageState extends State<ShopSelectionPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: new AppBar(
-        title: Text("Select Shop")
+        title: Text("दुकान निवड करा")
       ),
       body: new StreamBuilder(
         stream: Firestore.instance.collection('shops').where('city', isEqualTo: "Latur").where('type', arrayContains: widget.type).snapshots(),

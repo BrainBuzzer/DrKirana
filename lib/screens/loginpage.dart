@@ -68,7 +68,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         fillColor: Colors.white,
                         filled: true,
-                        hintText: 'Enter Phone Number',
+                        hintText: 'मोबाइल नंबर टाका',
                         prefixText: '+91',
                       ),
                       onChanged: (val) {
@@ -119,7 +119,7 @@ class _LoginPageState extends State<LoginPage> {
                   padding: EdgeInsets.all(15),
                   textTheme: ButtonTextTheme.primary,
                   textColor: Colors.black,
-                  child: Center(child: Text('Verify')),
+                  child: Center(child: Text('पुष्टी करा')),
                   onPressed: () {
                     codeSent ? AuthService().signInWithOTP(smsCode, verificationId) : verifyPhone(phoneNo);
                   },

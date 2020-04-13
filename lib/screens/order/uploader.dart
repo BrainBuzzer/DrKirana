@@ -111,7 +111,7 @@ class _UploaderState extends State<Uploader> {
                   if(_uploadTask.isComplete)
                     Center(
                       child: Text(
-                        orderPlaced ? 'Order Placed Successfully!' : 'Picture uploaded successfully. Please wait while we are placing you order.',
+                        orderPlaced ? 'ऑर्डर पाठवली' : 'आम्ही आपली ऑर्डर पाठवत आहोत',
                         style: Theme.of(context).textTheme.title,
                         textAlign: TextAlign.center,
                       ),
@@ -131,7 +131,7 @@ class _UploaderState extends State<Uploader> {
       );
     } else {
       return widget.file != null ? FlatButton.icon(
-        label: Text('Order this List'),
+        label: Text('ऑर्डर करा'),
         color: Colors.green,
         padding: EdgeInsets.all(20),
         shape: RoundedRectangleBorder(

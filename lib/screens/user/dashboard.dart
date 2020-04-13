@@ -29,7 +29,7 @@ class _DashboardPageState extends State<DashboardPage> {
     return Scaffold(
       appBar: new AppBar(
         title: new Text(
-          "Dr Kirana",
+          "डॉक्टर किराणा",
           style: TextStyle(
             color: Colors.black,
           )
@@ -57,11 +57,11 @@ class _DashboardPageState extends State<DashboardPage> {
           ),
           new BottomNavigationBarItem(
             icon: Icon(Icons.shopping_cart),
-            title: Text("All Orders")
+            title: Text("आपल्या ऑर्डर")
           ),
           new BottomNavigationBarItem(
               icon: Icon(Icons.person),
-              title: Text("Profile")
+              title: Text("तुमची माहिती")
           )
         ],
       ),

@@ -52,7 +52,7 @@ class _UserProfileEditPageState extends State<UserProfileEditPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: new AppBar(title: Text("User Profile")),
+        appBar: new AppBar(title: Text("तुमची माहिती")),
         body: Form(
             key: _formKey,
             child: Column(
@@ -64,7 +64,7 @@ class _UserProfileEditPageState extends State<UserProfileEditPage> {
                       child: TextFormField(
                           validator: (val) {
                             if (val.isEmpty) {
-                              return 'Please enter your name';
+                              return 'कृपया आपले नाव टाका';
                             }
                             return null;
                           },
@@ -76,8 +76,8 @@ class _UserProfileEditPageState extends State<UserProfileEditPage> {
                             ),
                             fillColor: Colors.white,
                             filled: true,
-                            hintText: 'Enter your name',
-                            labelText: 'Name',
+                            hintText: 'आपले संपूर्ण नाव',
+                            labelText: 'संपूर्ण नाव',
                           ),
                           onChanged: (val) {
                             setState(() {
@@ -92,7 +92,7 @@ class _UserProfileEditPageState extends State<UserProfileEditPage> {
                     child: TextFormField(
                         validator: (val) {
                           if (val.isEmpty) {
-                            return 'Please enter your address';
+                            return 'कृपया आपला संपूर्ण पत्ता टाकावा';
                           }
                           return null;
                         },
@@ -104,8 +104,8 @@ class _UserProfileEditPageState extends State<UserProfileEditPage> {
                           ),
                           fillColor: Colors.white,
                           filled: true,
-                          hintText: 'Enter your address',
-                          labelText: 'Address',
+                          hintText: 'आपला पत्ता',
+                          labelText: 'पत्ता',
                         ),
                         onChanged: (val) {
                           setState(() {
@@ -119,7 +119,7 @@ class _UserProfileEditPageState extends State<UserProfileEditPage> {
                       elevation: 5,
                       isExpanded: true,
                       items: [
-                        DropdownMenuItem(child: Text("Latur"), value: "Latur"),
+                        DropdownMenuItem(child: Text("लातूर"), value: "Latur"),
                       ],
                       onChanged: (value) {
                         setState(() {
@@ -135,7 +135,7 @@ class _UserProfileEditPageState extends State<UserProfileEditPage> {
                     }
                   },
                   icon: Icon(Icons.check),
-                  label: Text("Submit"),
+                  label: Text("पुष्टी करा"),
                   color: Colors.blue,
                   textColor: Colors.white,
                 )

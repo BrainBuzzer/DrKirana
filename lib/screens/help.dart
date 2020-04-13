@@ -18,7 +18,7 @@ class HelpPage extends StatelessWidget {
         children: <Widget>[
           Center(
             child: Text(
-              "Contact Us",
+              "संपर्क साधा",
               style: TextStyle(
                 fontSize: 50
               ),
@@ -30,7 +30,7 @@ class HelpPage extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Text(
-                  "If you want to get your shop registered on this app, please click on the call button. We'd love to have you onboard.",
+                  "जर आपणास आपले दुकान एप वरती नोंदणी करवायचे असेल तर कृपया खालील बटन वर दाबून संपर्क साधावा.",
                   style: TextStyle(
                     fontSize: 20
                   ),
@@ -40,11 +40,12 @@ class HelpPage extends StatelessWidget {
           ),
           RaisedButton(
             onPressed: _email,
-            child: new Text('Email'),
+            child: new Text('ई-मेल'),
           ),
-          RaisedButton(
+          RaisedButton.icon(
             onPressed: _call,
-            child: new Text('Call')
+            icon: Icon(Icons.call),
+            label: new Text('फोन कॉल')
           )
         ],
       )

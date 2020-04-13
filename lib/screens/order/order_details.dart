@@ -57,7 +57,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                             ),
                             Divider(),
                             ListTile(
-                                title: Text("View the order",),
+                                title: Text("ऑर्डरची यादी",),
                                 leading: Icon(
                                     Icons.image,
                                     color: Colors.blue[500]
@@ -118,7 +118,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                             elevation: 3,
                             color: Colors.red,
                             child: ListTile(
-                                title: Text("Cancel this order", style: TextStyle(color: Colors.white)),
+                                title: Text("ऑर्डर रद्द करा", style: TextStyle(color: Colors.white)),
                                 leading: Icon(Icons.shopping_cart, color: Colors.white),
                                 onTap: () {
                                   _cancelOrder(orderSnapshot.data);
@@ -144,7 +144,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                 elevation: 3,
                 color: Colors.blue,
                 child: ListTile(
-                  title: Text("Order Placed", style: TextStyle(color: Colors.white)),
+                  title: Text("ऑर्डर पाठवली", style: TextStyle(color: Colors.white)),
                   leading: Icon(Icons.shopping_cart, color: Colors.white)
                 ),
             )
@@ -157,7 +157,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
               elevation: 3,
               color: Colors.lightGreen,
               child: ListTile(
-                  title: Text("Shopkeeper is processing your order.", style: TextStyle(color: Colors.white)),
+                  title: Text("दुकानदार आपली ऑर्डर तयार करत आहे.", style: TextStyle(color: Colors.white)),
                   leading: Icon(Icons.timer, color: Colors.white)
               ),
             )
@@ -170,7 +170,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
               elevation: 3,
               color: Colors.green,
               child: ListTile(
-                  title: Text("Your order is out for delivery.", style: TextStyle(color: Colors.white)),
+                  title: Text("आपली ऑर्डर डिलीवेरी साठी बाहेर पडलेली आहे.", style: TextStyle(color: Colors.white)),
                   leading: Icon(Icons.directions_walk, color: Colors.white)
               ),
             )
@@ -183,7 +183,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
               elevation: 3,
               color: Colors.red,
               child: ListTile(
-                  title: Text("You have cancelled the order.", style: TextStyle(color: Colors.white)),
+                  title: Text("आपण आपली ऑर्डर रद्द केली आहे.", style: TextStyle(color: Colors.white)),
                   leading: Icon(Icons.cancel, color: Colors.white)
               ),
             )
@@ -196,7 +196,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
               elevation: 3,
               color: Colors.red,
               child: ListTile(
-                  title: Text("Shopkeeper has declined your order.", style: TextStyle(color: Colors.white)),
+                  title: Text("दुकानदारांनी आपल्या ऑर्डर साठी नकार दिला.", style: TextStyle(color: Colors.white)),
                   leading: Icon(Icons.cancel, color: Colors.white)
               ),
             )
@@ -209,7 +209,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
               elevation: 3,
               color: Colors.green,
               child: ListTile(
-                  title: Text("Your order has been delivered successfully!", style: TextStyle(color: Colors.white)),
+                  title: Text("तुमची ऑर्डर यशस्वीरीत्या तुमच्यापर्यंत पोहचवली", style: TextStyle(color: Colors.white)),
                   leading: Icon(Icons.check_circle_outline, color: Colors.white)
               ),
             )

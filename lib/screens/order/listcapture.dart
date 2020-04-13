@@ -17,10 +17,11 @@ class ListCapturePage extends StatefulWidget {
 class _ListCapturePageState extends State<ListCapturePage> {
   File _imageFile;
 
+  // ignore: missing_return
   Future<File> _checkIfPaper(File image, BuildContext context) async {
     final FirebaseVisionImage visionImage = FirebaseVisionImage.fromFile(image);
     final ImageLabeler labeler = FirebaseVision.instance.imageLabeler(
-      ImageLabelerOptions(confidenceThreshold: 0.7)
+      ImageLabelerOptions(confidenceThreshold: 0.65)
     );
     final List<ImageLabel> labels = await labeler.processImage(visionImage);
 
@@ -83,7 +84,7 @@ class _ListCapturePageState extends State<ListCapturePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: new AppBar(
-        title: new Text("Place Your Order"),
+        title: new Text("ऑर्डर करा"),
       ),
       body: Center(
         child: Center(
