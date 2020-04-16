@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dr_kirana/screens/user/location_pick.dart';
 import 'package:dr_kirana/screens/user/user_profile_edit.dart';
 import 'package:dr_kirana/services/authservice.dart';
 import 'package:flutter/material.dart';
@@ -43,7 +44,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                       ),
                       RaisedButton.icon(
                         onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => UserProfileEditPage(doc: snapshot.data, uid: uid.data)));
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => LocationPickPage(doc: snapshot.data, uid: uid.data)));
                         },
                         label: Text("माहिती बदल करा"),
                         icon: Icon(Icons.edit)

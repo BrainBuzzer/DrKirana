@@ -1,11 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dr_kirana/screens/user/dashboard.dart';
+import 'package:dr_kirana/screens/user/location_pick.dart';
 import 'package:flutter/material.dart';
+import 'package:geoflutterfire/geoflutterfire.dart';
 
 class UserProfileEditPage extends StatefulWidget {
   final DocumentSnapshot doc;
   final String uid;
-  UserProfileEditPage({Key key, this.doc, this.uid}): super(key: key);
+  final GeoFirePoint pos;
+  UserProfileEditPage({Key key, this.doc, this.uid, this.pos}): super(key: key);
 
   @override
   _UserProfileEditPageState createState() => _UserProfileEditPageState();
@@ -25,7 +28,7 @@ class _UserProfileEditPageState extends State<UserProfileEditPage> {
       } else {
         name = '';
         address = '';
-        city = "Latur";
+        city = '';
       }
     });
     super.initState();
@@ -35,17 +38,19 @@ class _UserProfileEditPageState extends State<UserProfileEditPage> {
     if(widget.doc == null) {
       Firestore.instance.collection('users').document(widget.uid).setData({
         'name': name,
-        'address': address + ' ' + city,
+        'address': address,
         'city': city,
+        'location': widget.pos.data
       });
       Navigator.push(context, MaterialPageRoute(builder: (context) => DashboardPage()));
     } else {
       Firestore.instance.collection('users').document(widget.uid).updateData({
         'name': name,
-        'address': address + ' ' + city,
-        'city': city
+        'address': address,
+        'city': city,
+        'location': widget.pos.data
       });
-      Navigator.pop(context);
+      Navigator.of(context).push(MaterialPageRoute(builder: (context) => DashboardPage()));
     }
   }
 
@@ -120,6 +125,7 @@ class _UserProfileEditPageState extends State<UserProfileEditPage> {
                       isExpanded: true,
                       items: [
                         DropdownMenuItem(child: Text("लातूर"), value: "Latur"),
+                        DropdownMenuItem(child: Text("नेकनूर"), value: "Neknur"),
                       ],
                       onChanged: (value) {
                         setState(() {
@@ -127,6 +133,15 @@ class _UserProfileEditPageState extends State<UserProfileEditPage> {
                         });
                       },
                     )),
+                RaisedButton.icon(
+                  onPressed: () {
+                    Navigator.of(context).push(new MaterialPageRoute(builder: (context) => LocationPickPage(doc: widget.doc, uid: widget.uid)));
+                  },
+                  icon: Icon(Icons.location_on),
+                  label: Text("आपले घर नकाशावर पहा"),
+                  color: Colors.blue,
+                  textColor: Colors.white,
+                ),
 
                 RaisedButton.icon(
                   onPressed: () {
