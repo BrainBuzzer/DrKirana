@@ -54,14 +54,4 @@ class AuthService {
     AuthCredential authCredential = PhoneAuthProvider.getCredential(verificationId: verId, smsCode: smsCode);
     signIn(authCredential);
   }
-
-  Future<FirebaseUser> getCurrentUser() async {
-    FirebaseUser user = await FirebaseAuth.instance.currentUser();
-    return user;
-  }
-
-  Future<String> getCurrentUID() async {
-    FirebaseUser user = await FirebaseAuth.instance.currentUser();
-    return user.uid;
-  }
 }

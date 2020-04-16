@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:dr_kirana/services/authservice.dart';
 import 'package:facebook_app_events/facebook_app_events.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -9,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:provider/provider.dart';
 
 class Uploader extends StatefulWidget {
   final File file;
@@ -21,6 +21,7 @@ class Uploader extends StatefulWidget {
 class _UploaderState extends State<Uploader> {
   final FirebaseStorage _storage = FirebaseStorage(storageBucket: 'gs://dr-kirana-final.appspot.com/');
   final FirebaseAnalytics analytics = FirebaseAnalytics();
+  FirebaseUser user;
   static final FacebookAppEvents facebookAppEvents = FacebookAppEvents();
   String filePath;
   bool orderPlaced = false, locationService = true;
@@ -35,7 +36,6 @@ class _UploaderState extends State<Uploader> {
   }
 
   Future<void> _storeOrder() async {
-    FirebaseUser user = await AuthService().getCurrentUser();
     Position position;
 
     DocumentSnapshot doc = await Firestore.instance.collection('users').document(user.uid).get();
@@ -77,6 +77,9 @@ class _UploaderState extends State<Uploader> {
 
   @override
   Widget build(BuildContext context) {
+    setState(() {
+      user = Provider.of<FirebaseUser>(context, listen: true);
+    });
     if(_uploadTask != null) {
       return StreamBuilder<StorageTaskEvent>(
         stream: _uploadTask.events,
@@ -122,7 +125,7 @@ class _UploaderState extends State<Uploader> {
         ),
         textColor: Colors.white,
         icon: Icon(Icons.cloud_upload),
-        onPressed: _startUpload,
+        onPressed: () => _startUpload(),
       ) : Container();
     }
   }

@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dr_kirana/screens/order/order_details.dart';
-import 'package:dr_kirana/services/authservice.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class OrdersListPage extends StatefulWidget {
@@ -10,25 +11,12 @@ class OrdersListPage extends StatefulWidget {
 }
 
 class _OrdersListPageState extends State<OrdersListPage> {
-  String uid;
-
-  void initState() {
-    AuthService().getCurrentUID().then((id) {
-      setState(() {
-        uid = id;
-      });
-    });
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
-    if(uid == null)
-      return Center(
-        child: CircularProgressIndicator()
-      );
+    var user = Provider.of<FirebaseUser>(context, listen: true);
+
     return StreamBuilder(
-        stream: Firestore.instance.collection('orders').where('uid', isEqualTo: uid).orderBy('time_order_placed', descending: true).snapshots(),
+        stream: Firestore.instance.collection('orders').where('uid', isEqualTo: user.uid).orderBy('time_order_placed', descending: true).snapshots(),
         builder: (context, snapshot) {
           if(!snapshot.hasData)
             return Container(

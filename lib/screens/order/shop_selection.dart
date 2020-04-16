@@ -1,9 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dr_kirana/screens/order/listcapture.dart';
-import 'package:dr_kirana/services/authservice.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
 
 class ShopSelectionPage extends StatefulWidget {
   final String type;
@@ -14,23 +15,16 @@ class ShopSelectionPage extends StatefulWidget {
 }
 
 class _ShopSelectionPageState extends State<ShopSelectionPage> {
-  String uid;
-  void initState() {
-    AuthService().getCurrentUID().then((id) {
-      setState(() {
-        uid = id;
-      });
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
+    var user = Provider.of<FirebaseUser>(context, listen: true);
+
     return Scaffold(
       appBar: new AppBar(
         title: Text("दुकान निवड करा")
       ),
       body: StreamBuilder(
-        stream: Firestore.instance.collection('users').document(uid).snapshots(),
+        stream: Firestore.instance.collection('users').document(user.uid).snapshots(),
         builder: (context, userSnapshot) {
           if(!userSnapshot.hasData)
             return Container(
