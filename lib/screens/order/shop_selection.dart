@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dr_kirana/screens/order/listcapture.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:provider/provider.dart';
 
 class ShopSelectionPage extends StatefulWidget {
@@ -39,7 +39,7 @@ class _ShopSelectionPageState extends State<ShopSelectionPage> {
                 )
             );
           return StreamBuilder(
-              stream: Firestore.instance.collection('shops').where('city', isEqualTo: userSnapshot.data['city']).where('type', arrayContains: widget.type).snapshots(),
+              stream: listShops(userSnapshot),
               builder: (context, snapshot) {
                 if(!snapshot.hasData)
                   return Container(
@@ -48,7 +48,7 @@ class _ShopSelectionPageState extends State<ShopSelectionPage> {
                       )
                   );
                 return GridView.builder(
-                    itemCount: snapshot.data.documents.length,
+                    itemCount: snapshot.data.length,
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
                     ),
@@ -61,7 +61,7 @@ class _ShopSelectionPageState extends State<ShopSelectionPage> {
                                   child: Stack(
                                       children: <Widget>[
                                         Image(
-                                          image: NetworkImage(snapshot.data.documents[index]['logo']),
+                                          image: NetworkImage(snapshot.data[index]['logo']),
                                           fit: BoxFit.cover,
                                           width: MediaQuery.of(context).size.width,
                                           height: 200,
@@ -88,7 +88,7 @@ class _ShopSelectionPageState extends State<ShopSelectionPage> {
                                                 Padding(
                                                   padding: EdgeInsets.all(3),
                                                   child: Text(
-                                                      snapshot.data.documents[index]['name'],
+                                                      snapshot.data[index]['name'],
                                                       textAlign: TextAlign.center,
                                                       style: TextStyle(
                                                         fontSize: 20,
@@ -100,7 +100,7 @@ class _ShopSelectionPageState extends State<ShopSelectionPage> {
                                                 Padding(
                                                   padding: EdgeInsets.all(3),
                                                   child: Text(
-                                                      snapshot.data.documents[index]['address'],
+                                                      snapshot.data[index]['address'],
                                                       style: TextStyle(
                                                         fontSize: 16,
                                                         color: Colors.white70,
@@ -117,7 +117,7 @@ class _ShopSelectionPageState extends State<ShopSelectionPage> {
                                     Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (context) => ListCapturePage(type: widget.type, shop: snapshot.data.documents[index].documentID, note: snapshot.data.documents[index]["note"])
+                                            builder: (context) => ListCapturePage(type: widget.type, shop: snapshot.data[index].documentID, note: snapshot.data[index]["note"])
                                         )
                                     );
                                   }
@@ -131,5 +131,18 @@ class _ShopSelectionPageState extends State<ShopSelectionPage> {
         },
       )
     );
+  }
+
+  Stream<List<DocumentSnapshot>> listShops(AsyncSnapshot snapshot) {
+    Geoflutterfire geo = Geoflutterfire();
+    GeoFirePoint center = geo.point(latitude: snapshot.data['location']['geopoint'].latitude, longitude: snapshot.data['location']['geopoint'].longitude);
+    var collectionReference = Firestore.instance.collection('shops').where('type', arrayContains: widget.type);
+
+    double radius = 5;
+    String field = 'location';
+
+    Stream<List<DocumentSnapshot>> stream = geo.collection(collectionRef: collectionReference)
+        .within(center: center, radius: radius, field: field);
+    return stream;
   }
 }

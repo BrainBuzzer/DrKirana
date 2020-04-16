@@ -18,23 +18,22 @@ class UserProfileEditPage extends StatefulWidget {
 class _UserProfileEditPageState extends State<UserProfileEditPage> {
   final _formKey = GlobalKey<FormState>();
 
-  String name, address, city;
+  String name, address;
+  var addressController = TextEditingController();
 
   void initState() {
     setState(() {
       if(widget.doc != null) {
         name = widget.doc['name'];
-        address = widget.doc['address'];
-        city = widget.doc['city'];
+        addressController.text = widget.doc['address'];
       } else {
         name = '';
-        address = '';
-        city = "Latur";
+        addressController.text = '';
       }
       var googleGeocoding = GoogleGeocoding("AIzaSyAaqhxRs-OXuE7_cwBM6N8yTz6VxjD0nQg");
       googleGeocoding.geocoding.getReverse(LatLon(widget.pos.latitude, widget.pos.longitude)).then((data) {
         setState(() {
-          address = data.results[0].formattedAddress;
+          addressController.text = data.results[0].formattedAddress;
         });
       });
     });
@@ -45,16 +44,14 @@ class _UserProfileEditPageState extends State<UserProfileEditPage> {
     if(widget.doc == null) {
       Firestore.instance.collection('users').document(widget.uid).setData({
         'name': name,
-        'address': address,
-        'city': city,
+        'address': addressController.text,
         'location': widget.pos.data
       });
       Navigator.push(context, MaterialPageRoute(builder: (context) => DashboardPage()));
     } else {
       Firestore.instance.collection('users').document(widget.uid).updateData({
         'name': name,
-        'address': address,
-        'city': city,
+        'address': addressController.text,
         'location': widget.pos.data
       });
       Navigator.of(context).push(MaterialPageRoute(builder: (context) => DashboardPage()));
@@ -102,14 +99,8 @@ class _UserProfileEditPageState extends State<UserProfileEditPage> {
                 Padding(
                     padding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
                     child: TextFormField(
-                        validator: (val) {
-                          if (val.isEmpty) {
-                            return 'कृपया आपला संपूर्ण पत्ता टाकावा';
-                          }
-                          return null;
-                        },
-                        initialValue: address,
                         keyboardType: TextInputType.multiline,
+                        controller: addressController,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
@@ -118,28 +109,7 @@ class _UserProfileEditPageState extends State<UserProfileEditPage> {
                           filled: true,
                           hintText: 'आपला पत्ता',
                           labelText: 'पत्ता',
-                        ),
-                        onChanged: (val) {
-                          setState(() {
-                            this.address = val;
-                          });
-                        })),
-                Padding(
-                    padding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-                    child: DropdownButton<String>(
-                      value: this.city,
-                      elevation: 5,
-                      isExpanded: true,
-                      items: [
-                        DropdownMenuItem(child: Text("लातूर"), value: "Latur"),
-                        DropdownMenuItem(child: Text("नेकनूर"), value: "Neknur"),
-                      ],
-                      onChanged: (value) {
-                        setState(() {
-                          this.city = value;
-                        });
-                      },
-                    )),
+                        ))),
                 RaisedButton.icon(
                   onPressed: () {
                     Navigator.of(context).push(new MaterialPageRoute(builder: (context) => LocationPickPage(doc: widget.doc, uid: widget.uid)));
