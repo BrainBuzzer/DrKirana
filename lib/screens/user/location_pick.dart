@@ -9,7 +9,7 @@ class LocationPickPage extends StatefulWidget {
   final DocumentSnapshot doc;
   final String uid;
 
-  LocationPickPage({Key key, this.doc, this.uid}) : super(key: key);
+  LocationPickPage({Key key, this.doc, @required this.uid}) : super(key: key);
 
   @override
   _LocationPickPageState createState() => _LocationPickPageState();

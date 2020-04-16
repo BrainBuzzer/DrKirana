@@ -19,6 +19,12 @@ class _ShopSelectionPageState extends State<ShopSelectionPage> {
   Widget build(BuildContext context) {
     var user = Provider.of<FirebaseUser>(context, listen: true);
 
+    if(user == null) {
+      return Container(
+        child: CircularProgressIndicator(),
+      );
+    }
+
     return Scaffold(
       appBar: new AppBar(
         title: Text("दुकान निवड करा")

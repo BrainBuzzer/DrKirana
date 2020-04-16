@@ -15,6 +15,12 @@ class _OrdersListPageState extends State<OrdersListPage> {
   Widget build(BuildContext context) {
     var user = Provider.of<FirebaseUser>(context, listen: true);
 
+    if(user == null) {
+      return Container(
+        child: CircularProgressIndicator(),
+      );
+    }
+
     return StreamBuilder(
         stream: Firestore.instance.collection('orders').where('uid', isEqualTo: user.uid).orderBy('time_order_placed', descending: true).snapshots(),
         builder: (context, snapshot) {

@@ -22,17 +22,20 @@ class _UserProfileEditPageState extends State<UserProfileEditPage> {
 
   void initState() {
     setState(() {
+      if(widget.doc != null) {
+        name = widget.doc['name'];
+        address = widget.doc['address'];
+        city = widget.doc['city'];
+      } else {
+        name = '';
+        address = '';
+        city = "Latur";
+      }
       var googleGeocoding = GoogleGeocoding("AIzaSyAaqhxRs-OXuE7_cwBM6N8yTz6VxjD0nQg");
       googleGeocoding.geocoding.getReverse(LatLon(widget.pos.latitude, widget.pos.longitude)).then((data) {
-        if(widget.doc != null) {
-          name = widget.doc['name'];
+        setState(() {
           address = data.results[0].formattedAddress;
-          city = widget.doc['city'];
-        } else {
-          name = '';
-          address = data.results[0].formattedAddress;
-          city = "Latur";
-        }
+        });
       });
     });
     super.initState();

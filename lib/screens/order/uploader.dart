@@ -39,8 +39,13 @@ class _UploaderState extends State<Uploader> {
     Position position;
 
     DocumentSnapshot doc = await Firestore.instance.collection('users').document(user.uid).get();
-    List<Placemark> placemark = await Geolocator().placemarkFromAddress(doc.data['address']);
-    position = placemark[0].position;
+    if(doc.data['location'] == null) {
+      List<Placemark> placemark = await Geolocator().placemarkFromAddress(
+          doc.data['address']);
+      position = placemark[0].position;
+    } else {
+      position = new Position(latitude: doc.data['location']['geopoint'].latitude, longitude: doc.data['location']['geopoint'].longitude);
+    }
 
     Firestore.instance.collection('orders').add({
       'location': {
@@ -57,17 +62,17 @@ class _UploaderState extends State<Uploader> {
     });
 
     facebookAppEvents.logEvent(
-      name: "user_order_placed",
-      parameters: {
-        "time_order_placed": DateTime.now(),
-        "shop": widget.shop,
-        "uid": user.uid,
-      }
+        name: "user_order_placed",
+        parameters: {
+          "time_order_placed": DateTime.now(),
+          "shop": widget.shop,
+          "uid": user.uid,
+        }
     );
 
     await analytics.logEcommercePurchase(
-      origin: widget.type,
-      currency: "INR"
+        origin: widget.type,
+        currency: "INR"
     );
 
     setState(() {
@@ -80,6 +85,11 @@ class _UploaderState extends State<Uploader> {
     setState(() {
       user = Provider.of<FirebaseUser>(context, listen: true);
     });
+    if(user == null) {
+      return Container(
+        child: CircularProgressIndicator(),
+      );
+    }
     if(_uploadTask != null) {
       return StreamBuilder<StorageTaskEvent>(
         stream: _uploadTask.events,

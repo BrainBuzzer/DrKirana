@@ -14,6 +14,11 @@ class _UserProfilePageState extends State<UserProfilePage> {
   @override
   Widget build(BuildContext context) {
     var user = Provider.of<FirebaseUser>(context, listen: true);
+    if(user == null) {
+      return Container(
+        child: CircularProgressIndicator(),
+      );
+    }
     return StreamBuilder(
           stream: Firestore.instance.collection('users').document(user.uid).snapshots(),
           builder: (context, snapshot) {
