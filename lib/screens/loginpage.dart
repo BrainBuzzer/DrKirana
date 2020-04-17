@@ -3,8 +3,10 @@ import 'package:facebook_app_events/facebook_app_events.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:pinput/pin_put/pin_put.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:mobile_number/mobile_number.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -15,9 +17,37 @@ class _LoginPageState extends State<LoginPage> {
   final formKey = new GlobalKey<FormState>();
   static final facebookAppEvents = FacebookAppEvents();
 
-  String phoneNo, verificationId, smsCode;
+  String verificationId, smsCode;
+
+  var phoneNo = TextEditingController();
 
   bool codeSent = false;
+
+
+  @override
+  void initState() {
+    super.initState();
+    initMobileNumberState();
+  }
+
+  Future<void> initMobileNumberState() async {
+    String mobileNumber = '';
+
+    try {
+      mobileNumber = await MobileNumber.mobileNumber;
+    } on PlatformException catch (e) {
+      debugPrint("Failed to get mobile number because of '${e.message}'");
+    }
+
+    // If the widget was removed from the tree while the asynchronous platform
+    // message was in flight, we want to discard the reply rather than calling
+    // setState to update our non-existent appearance.
+    if (!mounted) return;
+
+    setState(() {
+      phoneNo.text = mobileNumber;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,6 +92,7 @@ class _LoginPageState extends State<LoginPage> {
                   children: <Widget>[
                     TextFormField(
                       keyboardType: TextInputType.phone,
+                      controller: phoneNo,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(90),
@@ -71,11 +102,11 @@ class _LoginPageState extends State<LoginPage> {
                         hintText: 'मोबाइल नंबर टाका',
                         prefixText: '+91',
                       ),
-                      onChanged: (val) {
-                        setState(() {
-                          this.phoneNo = val;
-                        });
-                      }
+//                      onChanged: (val) {
+//                        setState(() {
+//                          phoneNo.text = val;
+//                        });
+//                      }
                     ),
                     codeSent ? Container()
                     : FlatButton(
@@ -184,7 +215,7 @@ class _LoginPageState extends State<LoginPage> {
     };
 
     await FirebaseAuth.instance.verifyPhoneNumber(
-        phoneNumber: '+91' + phoneNo,
+        phoneNumber: '+91' + phoneNo.text,
         timeout: const Duration(seconds: 5),
         verificationCompleted: verified,
         verificationFailed: failed,
