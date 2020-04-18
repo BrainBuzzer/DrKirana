@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pinput/pin_put/pin_put.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:mobile_number/mobile_number.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -22,32 +21,6 @@ class _LoginPageState extends State<LoginPage> {
   var phoneNo = TextEditingController();
 
   bool codeSent = false;
-
-
-  @override
-  void initState() {
-    super.initState();
-    initMobileNumberState();
-  }
-
-  Future<void> initMobileNumberState() async {
-    String mobileNumber = '';
-
-    try {
-      mobileNumber = await MobileNumber.mobileNumber;
-    } on PlatformException catch (e) {
-      debugPrint("Failed to get mobile number because of '${e.message}'");
-    }
-
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    if (!mounted) return;
-
-    setState(() {
-      phoneNo.text = mobileNumber;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {

@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dr_kirana/screens/user/dashboard.dart';
 import 'package:dr_kirana/screens/loginpage.dart';
 import 'package:dr_kirana/screens/user/location_pick.dart';
-import 'package:dr_kirana/screens/user/user_profile_edit.dart';
 import 'package:facebook_app_events/facebook_app_events.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -27,7 +26,11 @@ class AuthService {
               if(userSnapshot.data.exists) {
                 facebookAppEvents.logEvent(name: "user_signed_in");
                 analytics.logLogin();
-                return DashboardPage();
+                if(userSnapshot.data['location'] != null) {
+                  return DashboardPage();
+                } else {
+                  return LocationPickPage(uid: snapshot.data.uid, doc: userSnapshot.data);
+                }
               } else {
                 facebookAppEvents.logEvent(name: "user_signed_up");
                 analytics.logSignUp(signUpMethod: "phone_number");

@@ -142,7 +142,7 @@ class _ShopSelectionPageState extends State<ShopSelectionPage> {
         .collection('shops')
         .where('type', arrayContains: widget.type);
 
-    double radius = 5;
+    double radius = 3;
     String field = 'location';
 
     Stream<List<DocumentSnapshot>> stream = geo
