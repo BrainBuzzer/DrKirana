@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dr_kirana/store/cart/cart.dart';
 import 'package:flutter/material.dart';
 
 class FoodOrderPage extends StatefulWidget {
@@ -7,6 +8,8 @@ class FoodOrderPage extends StatefulWidget {
 }
 
 class _FoodOrderPageState extends State<FoodOrderPage> {
+  final Cart cart = Cart();
+
   List<Map> section = [
     {"name": "Tea and Coffee", "id": "tea"},
     {"name": "Farsan", "id": "farsan"},
@@ -18,7 +21,8 @@ class _FoodOrderPageState extends State<FoodOrderPage> {
     {"name": "Breakfast Items", "id": "breakfast"},
     {"name": "Biscuits", "id": "biscuits"},
     {"name": "Sauces and Spreads", "id": "sauces"},
-    {"name": "Noodles and Pasta", "id": "noodles"}
+    {"name": "Noodles and Pasta", "id": "noodles"},
+    {"name": "Masala", "id": "masala"}
   ];
 
   @override
@@ -26,6 +30,39 @@ class _FoodOrderPageState extends State<FoodOrderPage> {
     return Scaffold(
         appBar: new AppBar(
           title: Text("Food Items"),
+          actions: <Widget>[
+            new Stack(
+              children: <Widget>[
+                new IconButton(
+                    icon: Icon(Icons.shopping_cart), onPressed: () {}),
+                cart.items.length != 0
+                    ? new Positioned(
+                        right: 11,
+                        top: 11,
+                        child: new Container(
+                          padding: EdgeInsets.all(2),
+                          decoration: new BoxDecoration(
+                            color: Colors.red,
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          constraints: BoxConstraints(
+                            minWidth: 14,
+                            minHeight: 14,
+                          ),
+                          child: Text(
+                            '${cart.items.length}',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 8,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      )
+                    : new Container()
+              ],
+            ),
+          ],
         ),
         body: new Container(
             child: StreamBuilder(
@@ -72,6 +109,9 @@ class _FoodOrderPageState extends State<FoodOrderPage> {
           .map((item) => new ListTile(
                 title: Text(item.data['name']),
                 subtitle: Text("₹" + item.data['price']),
+                onTap: () {
+                  cart.addItemToCart(item, 1);
+                },
               ))
           .toList(),
     );
