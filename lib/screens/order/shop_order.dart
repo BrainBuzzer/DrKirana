@@ -1,24 +1,23 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dr_kirana/screens/order/image_view.dart';
 import 'package:dr_kirana/screens/order/uploader.dart';
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-class ListCapturePage extends StatefulWidget {
+class ShopOrderPage extends StatefulWidget {
   final DocumentSnapshot shop;
   final String type;
 
-  ListCapturePage({Key key, @required this.type, @required this.shop})
+  ShopOrderPage({Key key, @required this.type, @required this.shop})
       : super(key: key);
 
   @override
-  _ListCapturePageState createState() => _ListCapturePageState();
+  _ShopOrderPageState createState() => _ShopOrderPageState();
 }
 
-class _ListCapturePageState extends State<ListCapturePage> {
+class _ShopOrderPageState extends State<ShopOrderPage> {
   File _imageFile;
 
   // ignore: missing_return
@@ -120,28 +119,6 @@ class _ListCapturePageState extends State<ListCapturePage> {
                                   ),
                                 ),
                               ),
-                              if (widget.shop['menu'] != null)
-                                Container(
-                                  color: Colors.blue,
-                                  child: ListTile(
-                                    title: Text(
-                                      "आजचे भावफलक पहा",
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                    leading: Icon(
-                                      Icons.restaurant_menu,
-                                      color: Colors.white,
-                                    ),
-                                    onTap: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) => ImageView(
-                                                  imageLocation:
-                                                      widget.shop['menu'])));
-                                    },
-                                  ),
-                                ),
                               Container(
                                 color: Colors.green,
                                 child: ListTile(
@@ -158,6 +135,7 @@ class _ListCapturePageState extends State<ListCapturePage> {
                                   },
                                 ),
                               ),
+                              _buildShopItems(context),
                             ],
                           ),
                         ),
@@ -180,6 +158,32 @@ class _ListCapturePageState extends State<ListCapturePage> {
         Uploader(
             file: _imageFile, type: widget.type, shop: widget.shop.documentID)
       ]))),
+    );
+  }
+
+  Widget _buildShopItems(BuildContext context) {
+    return Container(
+      child: StreamBuilder(
+          stream: Firestore.instance
+              .collection('shops')
+              .document(widget.shop.documentID)
+              .collection('menu')
+              .snapshots(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return CircularProgressIndicator();
+            }
+            return ListView.builder(
+                shrinkWrap: true,
+                itemCount: snapshot.data.documents.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return ListTile(
+                    title: new Text(snapshot.data.documents[index]['name']),
+                    subtitle: new Text(
+                        "${snapshot.data.documents[index]['size']['qty']} ${snapshot.data.documents[index]['size']['unit']} - ₹${snapshot.data.documents[index]['price']}"),
+                  );
+                });
+          }),
     );
   }
 }

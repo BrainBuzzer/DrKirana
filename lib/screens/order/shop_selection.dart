@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dr_kirana/screens/order/listcapture.dart';
+import 'package:dr_kirana/screens/order/shop_order.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -122,7 +122,7 @@ class _ShopSelectionPageState extends State<ShopSelectionPage> {
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) =>
-                                                  ListCapturePage(
+                                                  ShopOrderPage(
                                                       type: widget.type,
                                                       shop: snapshot
                                                           .data[index])));
