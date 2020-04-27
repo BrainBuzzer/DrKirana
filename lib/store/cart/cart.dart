@@ -47,6 +47,7 @@ abstract class _Cart with Store {
   @action
   void removeItem(DocumentSnapshot product) {
     items.removeWhere((key, _) => key == product.documentID);
+    getTotalPrice();
   }
 
   @action

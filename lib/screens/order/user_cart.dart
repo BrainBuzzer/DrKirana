@@ -152,18 +152,20 @@ class _UserCartState extends State<UserCart> {
                   },
                 ),
               ),
-              Flexible(
-                  flex: 1,
-                  child: RaisedButton.icon(
-                      color: Colors.blue,
-                      icon: Icon(Icons.shopping_cart, color: Colors.white),
-                      onPressed: () {
-                        orderUserCart(context);
-                      },
-                      label: Text(
-                        "ऑर्डर करा",
-                        style: TextStyle(color: Colors.white),
-                      )))
+              cart.numberOfItems > 0
+                  ? Flexible(
+                      flex: 1,
+                      child: RaisedButton.icon(
+                          color: Colors.blue,
+                          icon: Icon(Icons.shopping_cart, color: Colors.white),
+                          onPressed: () {
+                            orderUserCart(context);
+                          },
+                          label: Text(
+                            "ऑर्डर करा",
+                            style: TextStyle(color: Colors.white),
+                          )))
+                  : Container()
             ]);
           },
         ));
@@ -185,7 +187,7 @@ class _UserCartState extends State<UserCart> {
       itemsList.add({
         'name': item['product']['name'],
         'quantity': "${item['quantity']} ${item['product']['size']['unit']}",
-        'price': item['product']['price'],
+        'price': item['price'],
       });
     });
 
@@ -209,6 +211,6 @@ class _UserCartState extends State<UserCart> {
     cart.emptyCart();
 
     Navigator.of(context)
-        .push(MaterialPageRoute(builder: (_) => DashboardPage()));
+        .push(MaterialPageRoute(builder: (_) => DashboardPage(index: 1)));
   }
 }
