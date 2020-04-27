@@ -1,8 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dr_kirana/screens/user/dashboard.dart';
 import 'package:dr_kirana/store/cart/cart.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 
 class UserCart extends StatefulWidget {
@@ -16,6 +19,7 @@ class UserCart extends StatefulWidget {
 
 class _UserCartState extends State<UserCart> {
   TextEditingController quantityController;
+  FirebaseUser user;
   final _key = GlobalKey<FormState>();
 
   @override
@@ -38,7 +42,8 @@ class _UserCartState extends State<UserCart> {
       child: Text("अॅड करा"),
       onPressed: () {
         if (_key.currentState.validate()) {
-          cart.addOrEditItem(doc, quantityController.text);
+          cart.addOrEditItem(
+              doc, quantityController.text, widget.shop.documentID);
           Navigator.pop(context);
           quantityController.clear();
         }
@@ -91,6 +96,9 @@ class _UserCartState extends State<UserCart> {
   @override
   Widget build(BuildContext context) {
     final cart = Provider.of<Cart>(context, listen: false);
+    setState(() {
+      user = Provider.of<FirebaseUser>(context, listen: true);
+    });
     return Scaffold(
         appBar: new AppBar(title: Text("Your Cart")),
         body: Observer(
@@ -149,7 +157,9 @@ class _UserCartState extends State<UserCart> {
                   child: RaisedButton.icon(
                       color: Colors.blue,
                       icon: Icon(Icons.shopping_cart, color: Colors.white),
-                      onPressed: () {},
+                      onPressed: () {
+                        orderUserCart(context);
+                      },
                       label: Text(
                         "ऑर्डर करा",
                         style: TextStyle(color: Colors.white),
@@ -157,5 +167,48 @@ class _UserCartState extends State<UserCart> {
             ]);
           },
         ));
+  }
+
+  orderUserCart(BuildContext context) async {
+    final cart = Provider.of<Cart>(context, listen: false);
+    Position position;
+
+    DocumentSnapshot doc =
+        await Firestore.instance.collection('users').document(user.uid).get();
+    position = new Position(
+        latitude: doc.data['location']['geopoint'].latitude,
+        longitude: doc.data['location']['geopoint'].longitude);
+
+    List itemsList = [];
+
+    cart.items.forEach((key, item) {
+      itemsList.add({
+        'name': item['product']['name'],
+        'quantity': "${item['quantity']} ${item['product']['size']['unit']}",
+        'price': item['product']['price'],
+      });
+    });
+
+    Map order = {'total': cart.totalPrice, 'items': itemsList};
+
+    Firestore.instance.collection('orders').add({
+      'location': {
+        'latitude': position.latitude,
+        'longitude': position.longitude,
+      },
+      'uid': user.uid,
+      'cat': 'list',
+      'order': order,
+      'phone_number': user.phoneNumber,
+      'status': "placed",
+      'type': "Order",
+      'time_order_placed': DateTime.now(),
+      'shop': widget.shop.documentID,
+    });
+
+    cart.emptyCart();
+
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (_) => DashboardPage()));
   }
 }

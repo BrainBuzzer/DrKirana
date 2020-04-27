@@ -101,7 +101,8 @@ class _ShopOrderPageState extends State<ShopOrderPage> {
       child: Text("अॅड करा"),
       onPressed: () {
         if (key.currentState.validate()) {
-          cart.addOrEditItem(doc, quantityController.text);
+          cart.addOrEditItem(
+              doc, quantityController.text, widget.shop.documentID);
           Navigator.pop(context);
           quantityController.clear();
         }

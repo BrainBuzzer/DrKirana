@@ -22,14 +22,22 @@ abstract class _Cart with Store {
   int totalPrice = 0;
 
   @action
-  void addOrEditItem(DocumentSnapshot product, String quantity) {
+  void addOrEditItem(
+      DocumentSnapshot product, String quantity, String recShop) {
     int qty = int.parse(quantity);
     int price = int.parse(product.data['price']) * qty;
-    if (items.containsKey(product.documentID)) {
-      items[product.documentID]['quantity'] = qty;
-      items[product.documentID]['price'] = price;
-      getTotalPrice();
+    if (shop == recShop) {
+      if (items.containsKey(product.documentID)) {
+        items[product.documentID]['quantity'] = qty;
+        items[product.documentID]['price'] = price;
+        getTotalPrice();
+      } else {
+        var item = {"product": product, "quantity": qty, "price": price};
+        items.putIfAbsent(product.documentID, () => item);
+        getTotalPrice();
+      }
     } else {
+      emptyCart();
       var item = {"product": product, "quantity": qty, "price": price};
       items.putIfAbsent(product.documentID, () => item);
       getTotalPrice();
@@ -44,6 +52,7 @@ abstract class _Cart with Store {
   @action
   void emptyCart() {
     items = ObservableMap.of({});
+    totalPrice = 0;
   }
 
   void getTotalPrice() {

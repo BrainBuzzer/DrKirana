@@ -80,10 +80,11 @@ mixin _$Cart on _Cart, Store {
   }
 
   @override
-  void addOrEditItem(DocumentSnapshot product, String quantity) {
+  void addOrEditItem(
+      DocumentSnapshot product, String quantity, String recShop) {
     final _$actionInfo = _$_CartActionController.startAction();
     try {
-      return super.addOrEditItem(product, quantity);
+      return super.addOrEditItem(product, quantity, recShop);
     } finally {
       _$_CartActionController.endAction(_$actionInfo);
     }
