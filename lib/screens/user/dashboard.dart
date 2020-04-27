@@ -1,5 +1,4 @@
 import 'package:dr_kirana/screens/help.dart';
-import 'package:dr_kirana/screens/order/food_order.dart';
 import 'package:dr_kirana/screens/order/orders_list.dart';
 import 'package:dr_kirana/screens/order/shop_selection.dart';
 import 'package:dr_kirana/screens/user/user_profile.dart';
@@ -7,12 +6,14 @@ import 'package:dr_kirana/services/firebase_notification.dart';
 import 'package:flutter/material.dart';
 
 class DashboardPage extends StatefulWidget {
+  int index;
+  DashboardPage({Key key, this.index}) : super(key: key);
   @override
   _DashboardPageState createState() => _DashboardPageState();
 }
 
 class _DashboardPageState extends State<DashboardPage> {
-  int _currentIndex = 0;
+  int _currentIndex;
   final List<Widget> _children = [
     UserPage(),
     OrdersListPage(),
@@ -21,6 +22,7 @@ class _DashboardPageState extends State<DashboardPage> {
 
   @override
   void initState() {
+    _currentIndex = widget.index ?? 0;
     super.initState();
     new FirebaseNotifications().setUpNotifications();
   }
@@ -71,56 +73,11 @@ class UserPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new Center(
-        child: SingleChildScrollView(
-      child: new Column(
-        children: <Widget>[
-          Card(
-            semanticContainer: true,
-            clipBehavior: Clip.antiAliasWithSaveLayer,
-            child: InkWell(
-              onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => FoodOrderPage()));
-              },
-              child: Stack(children: <Widget>[
-                Image(
-                  image: AssetImage('assets/hotel.jpg'),
-                  fit: BoxFit.cover,
-                  width: MediaQuery.of(context).size.width,
-                  height: 200,
-                ),
-                Positioned.fill(
-                  child: Opacity(
-                    opacity: 0.5,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.black,
-                      ),
-                    ),
-                  ),
-                ),
-                Positioned.fill(
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Center(
-                            child: Text("Food Items",
-                                style: TextStyle(
-                                  fontSize: 50,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                )))
-                      ]),
-                ),
-              ]),
-            ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10.0),
-            ),
-            elevation: 10,
-            margin: EdgeInsets.all(10),
-          ),
-          Card(
+        child: new Column(
+      children: <Widget>[
+        Flexible(
+          flex: 3,
+          child: Card(
             semanticContainer: true,
             clipBehavior: Clip.antiAliasWithSaveLayer,
             child: InkWell(
@@ -177,7 +134,10 @@ class UserPage extends StatelessWidget {
             elevation: 10,
             margin: EdgeInsets.all(10),
           ),
-          Card(
+        ),
+        Flexible(
+          flex: 3,
+          child: Card(
             semanticContainer: true,
             clipBehavior: Clip.antiAliasWithSaveLayer,
             child: InkWell(
@@ -234,7 +194,10 @@ class UserPage extends StatelessWidget {
             elevation: 10,
             margin: EdgeInsets.all(10),
           ),
-          Card(
+        ),
+        Flexible(
+          flex: 3,
+          child: Card(
             semanticContainer: true,
             clipBehavior: Clip.antiAliasWithSaveLayer,
             child: InkWell(
@@ -283,8 +246,8 @@ class UserPage extends StatelessWidget {
             elevation: 10,
             margin: EdgeInsets.all(10),
           ),
-        ],
-      ),
+        ),
+      ],
     ));
   }
 }

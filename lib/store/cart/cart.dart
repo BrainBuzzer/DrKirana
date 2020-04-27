@@ -7,21 +7,59 @@ class Cart = _Cart with _$Cart;
 
 abstract class _Cart with Store {
   @observable
-  List<Map> items = [];
+  ObservableMap<String, Map> items = ObservableMap.of({});
+
+  @observable
+  String shop;
 
   @action
-  void addItemToCart(DocumentSnapshot product, int quantity) {
-    print(quantity);
-    var item = {
-      "ref": product.documentID,
-      "price": product.data['price'],
-      "quantity": quantity
-    };
-    items.add(item);
+  setShop(rec) => shop = rec;
+
+  @computed
+  int get numberOfItems => items.length;
+
+  @observable
+  int totalPrice = 0;
+
+  @action
+  void addOrEditItem(
+      DocumentSnapshot product, String quantity, String recShop) {
+    int qty = int.parse(quantity);
+    int price = int.parse(product.data['price']) * qty;
+    if (shop == recShop) {
+      if (items.containsKey(product.documentID)) {
+        items[product.documentID]['quantity'] = qty;
+        items[product.documentID]['price'] = price;
+        getTotalPrice();
+      } else {
+        var item = {"product": product, "quantity": qty, "price": price};
+        items.putIfAbsent(product.documentID, () => item);
+        getTotalPrice();
+      }
+    } else {
+      emptyCart();
+      var item = {"product": product, "quantity": qty, "price": price};
+      items.putIfAbsent(product.documentID, () => item);
+      getTotalPrice();
+    }
   }
 
   @action
-  void removeItemFromCart(DocumentSnapshot product) {
-    items.removeWhere((item) => item["ref"] == product.documentID);
+  void removeItem(DocumentSnapshot product) {
+    items.removeWhere((key, _) => key == product.documentID);
+    getTotalPrice();
+  }
+
+  @action
+  void emptyCart() {
+    items = ObservableMap.of({});
+    totalPrice = 0;
+  }
+
+  void getTotalPrice() {
+    totalPrice = 0;
+    items.forEach((key, value) {
+      totalPrice += value['price'];
+    });
   }
 }
