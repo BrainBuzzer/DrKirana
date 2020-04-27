@@ -2,11 +2,13 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dr_kirana/screens/order/uploader.dart';
+import 'package:dr_kirana/screens/order/user_cart.dart';
 import 'package:dr_kirana/store/cart/cart.dart';
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 
 class ShopOrderPage extends StatefulWidget {
   final DocumentSnapshot shop;
@@ -22,7 +24,7 @@ class ShopOrderPage extends StatefulWidget {
 class _ShopOrderPageState extends State<ShopOrderPage> {
   File _imageFile;
   TextEditingController quantityController;
-  final Cart cart = Cart();
+  final key = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -86,6 +88,7 @@ class _ShopOrderPageState extends State<ShopOrderPage> {
   }
 
   showQuantityEditDialog(BuildContext context, DocumentSnapshot doc) {
+    final cart = Provider.of<Cart>(context, listen: false);
     // set up the buttons
     Widget cancelButton = FlatButton(
       child: Text("Cancel"),
@@ -97,26 +100,41 @@ class _ShopOrderPageState extends State<ShopOrderPage> {
     Widget continueButton = FlatButton(
       child: Text("अॅड करा"),
       onPressed: () {
-        Navigator.pop(context);
-        quantityController.clear();
-        cart.addOrEditItem(doc, quantityController.text);
+        if (key.currentState.validate()) {
+          cart.addOrEditItem(doc, quantityController.text);
+          Navigator.pop(context);
+          quantityController.clear();
+        }
       },
     );
 
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
-      content: TextFormField(
-        controller: quantityController,
-        autovalidate: true,
-        validator: (val) {
-          if (val.isEmpty) {
-            return "कृपया आपल्याला हवे असलेले प्रमाण टाका";
-          } else if (int.parse(val) <= 0) {
-            return "1 किवा त्यापेक्षा अधिक वस्तु मागणी करा";
-          }
-          return null;
-        },
-        keyboardType: TextInputType.number,
+      content: Form(
+        key: key,
+        child: TextFormField(
+          controller: quantityController,
+          autovalidate: true,
+          validator: (val) {
+            if (val.isEmpty) {
+              return "कृपया आपल्याला हवे असलेले प्रमाण टाका";
+            } else if (int.parse(val) <= 0) {
+              return "1 किवा त्यापेक्षा अधिक वस्तु मागणी करा";
+            }
+            return null;
+          },
+          decoration: InputDecoration(
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(90),
+            ),
+            fillColor: Colors.white,
+            filled: true,
+            labelText: "प्रमाण टाका",
+            hintText: 'प्रमाण टाका',
+            suffixText: doc.data['size']['unit'],
+          ),
+          keyboardType: TextInputType.number,
+        ),
       ),
       actions: [
         cancelButton,
@@ -146,40 +164,44 @@ class _ShopOrderPageState extends State<ShopOrderPage> {
 
   @override
   Widget build(BuildContext context) {
+    final cart = Provider.of<Cart>(context, listen: false);
     return Scaffold(
       appBar: new AppBar(
         title: new Text("ऑर्डर करा"),
         actions: <Widget>[
           new Stack(
             children: <Widget>[
-              new IconButton(icon: Icon(Icons.shopping_cart), onPressed: () {}),
-              cart.numberOfItems != 0
-                  ? new Positioned(
-                      right: 11,
-                      top: 11,
-                      child: new Container(
-                        padding: EdgeInsets.all(2),
-                        decoration: new BoxDecoration(
-                          color: Colors.red,
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        constraints: BoxConstraints(
-                          minWidth: 14,
-                          minHeight: 14,
-                        ),
-                        child: Observer(
-                          builder: (_) => Text(
-                            '${cart.numberOfItems}',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 8,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
+              new IconButton(
+                  icon: Icon(Icons.shopping_cart),
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (_) => UserCart(shop: widget.shop)));
+                  }),
+              new Positioned(
+                right: 11,
+                top: 11,
+                child: new Container(
+                  padding: EdgeInsets.all(2),
+                  decoration: new BoxDecoration(
+                    color: Colors.red,
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  constraints: BoxConstraints(
+                    minWidth: 14,
+                    minHeight: 14,
+                  ),
+                  child: Observer(
+                    builder: (_) => Text(
+                      '${cart.numberOfItems}',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 8,
                       ),
-                    )
-                  : new Container()
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+              )
             ],
           ),
         ],
@@ -255,6 +277,7 @@ class _ShopOrderPageState extends State<ShopOrderPage> {
   }
 
   Widget _buildShopItems(BuildContext context) {
+    final cart = Provider.of<Cart>(context, listen: false);
     return Container(
       child: StreamBuilder(
           stream: Firestore.instance
@@ -281,8 +304,15 @@ class _ShopOrderPageState extends State<ShopOrderPage> {
                               child: Icon(Icons.add, color: Colors.white),
                             ))),
                     onTap: () {
-                      showQuantityEditDialog(
-                          context, snapshot.data.documents[index]);
+                      if (cart.shop == widget.shop.documentID ||
+                          cart.shop != null) {
+                        showQuantityEditDialog(
+                            context, snapshot.data.documents[index]);
+                      } else {
+                        cart.setShop(widget.shop.documentID);
+                        showQuantityEditDialog(
+                            context, snapshot.data.documents[index]);
+                      }
                     },
                   );
                 });

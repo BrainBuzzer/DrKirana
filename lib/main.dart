@@ -1,4 +1,5 @@
 import 'package:dr_kirana/services/authservice.dart';
+import 'package:dr_kirana/store/cart/cart.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -14,15 +15,17 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        StreamProvider<FirebaseUser>.value(value: FirebaseAuth.instance.onAuthStateChanged),
+        StreamProvider<FirebaseUser>.value(
+            value: FirebaseAuth.instance.onAuthStateChanged),
+        Provider<Cart>(
+          create: (_) => Cart(),
+        )
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: new ThemeData.light(),
         title: "Dr Kirana",
-        navigatorObservers: [
-          FirebaseAnalyticsObserver(analytics: analytics)
-        ],
+        navigatorObservers: [FirebaseAnalyticsObserver(analytics: analytics)],
         home: AuthService().handleAuth(),
       ),
     );

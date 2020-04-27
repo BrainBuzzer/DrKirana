@@ -33,7 +33,51 @@ mixin _$Cart on _Cart, Store {
     }, _$itemsAtom, name: '${_$itemsAtom.name}_set');
   }
 
+  final _$shopAtom = Atom(name: '_Cart.shop');
+
+  @override
+  String get shop {
+    _$shopAtom.context.enforceReadPolicy(_$shopAtom);
+    _$shopAtom.reportObserved();
+    return super.shop;
+  }
+
+  @override
+  set shop(String value) {
+    _$shopAtom.context.conditionallyRunInAction(() {
+      super.shop = value;
+      _$shopAtom.reportChanged();
+    }, _$shopAtom, name: '${_$shopAtom.name}_set');
+  }
+
+  final _$totalPriceAtom = Atom(name: '_Cart.totalPrice');
+
+  @override
+  int get totalPrice {
+    _$totalPriceAtom.context.enforceReadPolicy(_$totalPriceAtom);
+    _$totalPriceAtom.reportObserved();
+    return super.totalPrice;
+  }
+
+  @override
+  set totalPrice(int value) {
+    _$totalPriceAtom.context.conditionallyRunInAction(() {
+      super.totalPrice = value;
+      _$totalPriceAtom.reportChanged();
+    }, _$totalPriceAtom, name: '${_$totalPriceAtom.name}_set');
+  }
+
   final _$_CartActionController = ActionController(name: '_Cart');
+
+  @override
+  dynamic setShop(dynamic rec) {
+    final _$actionInfo = _$_CartActionController.startAction();
+    try {
+      return super.setShop(rec);
+    } finally {
+      _$_CartActionController.endAction(_$actionInfo);
+    }
+  }
 
   @override
   void addOrEditItem(DocumentSnapshot product, String quantity) {
@@ -56,9 +100,19 @@ mixin _$Cart on _Cart, Store {
   }
 
   @override
+  void emptyCart() {
+    final _$actionInfo = _$_CartActionController.startAction();
+    try {
+      return super.emptyCart();
+    } finally {
+      _$_CartActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     final string =
-        'items: ${items.toString()},numberOfItems: ${numberOfItems.toString()}';
+        'items: ${items.toString()},shop: ${shop.toString()},totalPrice: ${totalPrice.toString()},numberOfItems: ${numberOfItems.toString()}';
     return '{$string}';
   }
 }

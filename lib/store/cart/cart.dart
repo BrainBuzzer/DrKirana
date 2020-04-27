@@ -9,21 +9,47 @@ abstract class _Cart with Store {
   @observable
   ObservableMap<String, Map> items = ObservableMap.of({});
 
+  @observable
+  String shop;
+
+  @action
+  setShop(rec) => shop = rec;
+
   @computed
   int get numberOfItems => items.length;
 
+  @observable
+  int totalPrice = 0;
+
   @action
   void addOrEditItem(DocumentSnapshot product, String quantity) {
+    int qty = int.parse(quantity);
+    int price = int.parse(product.data['price']) * qty;
     if (items.containsKey(product.documentID)) {
-      items[product.documentID]['quantity'] = quantity;
+      items[product.documentID]['quantity'] = qty;
+      items[product.documentID]['price'] = price;
+      getTotalPrice();
     } else {
-      var item = {"ref": product.documentID, "quantity": quantity};
+      var item = {"product": product, "quantity": qty, "price": price};
       items.putIfAbsent(product.documentID, () => item);
+      getTotalPrice();
     }
   }
 
   @action
   void removeItem(DocumentSnapshot product) {
     items.removeWhere((key, _) => key == product.documentID);
+  }
+
+  @action
+  void emptyCart() {
+    items = ObservableMap.of({});
+  }
+
+  void getTotalPrice() {
+    totalPrice = 0;
+    items.forEach((key, value) {
+      totalPrice += value['price'];
+    });
   }
 }
