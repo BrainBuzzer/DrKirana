@@ -110,7 +110,7 @@ class _FoodOrderPageState extends State<FoodOrderPage> {
                 title: Text(item.data['name']),
                 subtitle: Text("₹" + item.data['price']),
                 onTap: () {
-                  cart.addItemToCart(item, 1);
+                  cart.addOrEditItem(item, "1", "v7W7d4ZmvWZYpx1TxNkH");
                 },
               ))
           .toList(),
