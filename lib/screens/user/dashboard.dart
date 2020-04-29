@@ -6,7 +6,7 @@ import 'package:dr_kirana/services/firebase_notification.dart';
 import 'package:flutter/material.dart';
 
 class DashboardPage extends StatefulWidget {
-  int index;
+  final int index;
   DashboardPage({Key key, this.index}) : super(key: key);
   @override
   _DashboardPageState createState() => _DashboardPageState();

@@ -1,5 +1,6 @@
-import 'package:dr_kirana/services/authservice.dart';
+import 'package:dr_kirana/screens/splash_page.dart';
 import 'package:dr_kirana/store/cart/cart.dart';
+import 'package:dr_kirana/store/login_store/login_store.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -19,6 +20,9 @@ class MyApp extends StatelessWidget {
             value: FirebaseAuth.instance.onAuthStateChanged),
         Provider<Cart>(
           create: (_) => Cart(),
+        ),
+        Provider<LoginStore>(
+          create: (_) => LoginStore(),
         )
       ],
       child: MaterialApp(
@@ -26,7 +30,7 @@ class MyApp extends StatelessWidget {
         theme: new ThemeData.light(),
         title: "Dr Kirana",
         navigatorObservers: [FirebaseAnalyticsObserver(analytics: analytics)],
-        home: AuthService().handleAuth(),
+        home: SplashPage(),
       ),
     );
   }
