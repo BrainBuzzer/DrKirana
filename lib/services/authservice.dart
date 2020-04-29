@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dr_kirana/screens/login/loginpage.dart';
 import 'package:dr_kirana/screens/user/dashboard.dart';
-import 'package:dr_kirana/screens/loginpage.dart';
 import 'package:dr_kirana/screens/user/location_pick.dart';
 import 'package:facebook_app_events/facebook_app_events.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -12,38 +12,37 @@ class AuthService {
   static final FirebaseAnalytics analytics = FirebaseAnalytics();
   handleAuth() {
     return StreamBuilder(
-      stream: FirebaseAuth.instance.onAuthStateChanged,
-      builder: (BuildContext context, snapshot) {
-        if(snapshot.hasData) {
-          return StreamBuilder(
-            stream: Firestore.instance.collection('users').document(snapshot.data.uid).snapshots(),
-            builder: (context, userSnapshot) {
-              if(!userSnapshot.hasData) {
-                return Center(
-                  child: CircularProgressIndicator()
-                );
-              }
-              if(userSnapshot.data.exists) {
-                facebookAppEvents.logEvent(name: "user_signed_in");
-                analytics.logLogin();
-                if(userSnapshot.data['location'] != null) {
-                  return DashboardPage();
-                } else {
-                  return LocationPickPage(uid: snapshot.data.uid, doc: userSnapshot.data);
-                }
-              } else {
-                facebookAppEvents.logEvent(name: "user_signed_up");
-                analytics.logSignUp(signUpMethod: "phone_number");
-                return LocationPickPage(uid: snapshot.data.uid);
-              }
-            }
-          );
-        }
-        else {
-          return LoginPage();
-        }
-      }
-    );
+        stream: FirebaseAuth.instance.onAuthStateChanged,
+        builder: (BuildContext context, snapshot) {
+          if (snapshot.hasData) {
+            return StreamBuilder(
+                stream: Firestore.instance
+                    .collection('users')
+                    .document(snapshot.data.uid)
+                    .snapshots(),
+                builder: (context, userSnapshot) {
+                  if (!userSnapshot.hasData) {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                  if (userSnapshot.data.exists) {
+                    facebookAppEvents.logEvent(name: "user_signed_in");
+                    analytics.logLogin();
+                    if (userSnapshot.data['location'] != null) {
+                      return DashboardPage();
+                    } else {
+                      return LocationPickPage(
+                          uid: snapshot.data.uid, doc: userSnapshot.data);
+                    }
+                  } else {
+                    facebookAppEvents.logEvent(name: "user_signed_up");
+                    analytics.logSignUp(signUpMethod: "phone_number");
+                    return LocationPickPage(uid: snapshot.data.uid);
+                  }
+                });
+          } else {
+            return LoginPage();
+          }
+        });
   }
 
   signOut() {
@@ -55,7 +54,8 @@ class AuthService {
   }
 
   signInWithOTP(smsCode, verId) {
-    AuthCredential authCredential = PhoneAuthProvider.getCredential(verificationId: verId, smsCode: smsCode);
+    AuthCredential authCredential = PhoneAuthProvider.getCredential(
+        verificationId: verId, smsCode: smsCode);
     signIn(authCredential);
   }
 }

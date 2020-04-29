@@ -1,5 +1,5 @@
-import 'package:dr_kirana/screens/loginpage.dart';
-import 'package:dr_kirana/screens/otp_page.dart';
+import 'package:dr_kirana/screens/login/loginpage.dart';
+import 'package:dr_kirana/screens/login/otp_page.dart';
 import 'package:dr_kirana/screens/user/dashboard.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
