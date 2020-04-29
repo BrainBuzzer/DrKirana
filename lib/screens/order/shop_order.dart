@@ -293,29 +293,35 @@ class _ShopOrderPageState extends State<ShopOrderPage> {
             return ListView.builder(
                 itemCount: snapshot.data.documents.length,
                 itemBuilder: (BuildContext context, int index) {
-                  return ListTile(
-                    title: new Text(snapshot.data.documents[index]['name']),
-                    subtitle: new Text(
-                        "${snapshot.data.documents[index]['size']['qty']} ${snapshot.data.documents[index]['size']['unit']} - ₹${snapshot.data.documents[index]['price']}"),
-                    trailing: ClipOval(
-                        child: Container(
-                            color: Colors.green,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Icon(Icons.add, color: Colors.white),
-                            ))),
-                    onTap: () {
-                      if (cart.shop == widget.shop.documentID ||
-                          cart.shop != null) {
-                        showQuantityEditDialog(
-                            context, snapshot.data.documents[index]);
-                      } else {
-                        cart.setShop(widget.shop.documentID);
-                        showQuantityEditDialog(
-                            context, snapshot.data.documents[index]);
-                      }
-                    },
-                  );
+                  var returnItem = int.parse(
+                              snapshot.data.documents[index]['price']) >
+                          0
+                      ? ListTile(
+                          title:
+                              new Text(snapshot.data.documents[index]['name']),
+                          subtitle: new Text(
+                              "${snapshot.data.documents[index]['size']['qty']} ${snapshot.data.documents[index]['size']['unit']} - ₹${snapshot.data.documents[index]['price']}"),
+                          trailing: ClipOval(
+                              child: Container(
+                                  color: Colors.green,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Icon(Icons.add, color: Colors.white),
+                                  ))),
+                          onTap: () {
+                            if (cart.shop == widget.shop.documentID ||
+                                cart.shop != null) {
+                              showQuantityEditDialog(
+                                  context, snapshot.data.documents[index]);
+                            } else {
+                              cart.setShop(widget.shop.documentID);
+                              showQuantityEditDialog(
+                                  context, snapshot.data.documents[index]);
+                            }
+                          },
+                        )
+                      : Container();
+                  return returnItem;
                 });
           }),
     );
