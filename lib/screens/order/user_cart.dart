@@ -113,7 +113,8 @@ class _UserCartState extends State<UserCart> {
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Observer(
-                          builder: (_) => Text("Total: ₹${cart.totalPrice}",
+                          builder: (_) => Text(
+                              "Total: ₹${int.parse(widget.shop.data['minimum_order']) > cart.totalPrice ? cart.totalPrice + 30 : cart.totalPrice}",
                               style: Theme.of(context).textTheme.title),
                         ),
                       ),
@@ -154,17 +155,62 @@ class _UserCartState extends State<UserCart> {
               ),
               cart.numberOfItems > 0
                   ? Flexible(
-                      flex: 1,
-                      child: RaisedButton.icon(
-                          color: Colors.blue,
-                          icon: Icon(Icons.shopping_cart, color: Colors.white),
-                          onPressed: () {
-                            orderUserCart(context);
-                          },
-                          label: Text(
-                            "ऑर्डर करा",
-                            style: TextStyle(color: Colors.white),
-                          )))
+                      flex: 2,
+                      child: Column(children: <Widget>[
+                        int.parse(widget.shop.data['minimum_order']) >
+                                cart.totalPrice
+                            ? Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 8, top: 0, right: 8, bottom: 2),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    Text(
+                                      "Service Fees:",
+                                      style: TextStyle(color: Colors.black38),
+                                    ),
+                                    Text(
+                                      "₹10",
+                                      style: TextStyle(color: Colors.black38),
+                                    )
+                                  ],
+                                ),
+                              )
+                            : Container(),
+                        int.parse(widget.shop.data['minimum_order']) >
+                                cart.totalPrice
+                            ? Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 8, top: 2, right: 8, bottom: 2),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    Text(
+                                      "Delivery Fees:",
+                                      style: TextStyle(color: Colors.black38),
+                                    ),
+                                    Text(
+                                      "₹20",
+                                      style: TextStyle(color: Colors.black38),
+                                    )
+                                  ],
+                                ),
+                              )
+                            : Container(),
+                        RaisedButton.icon(
+                            color: Colors.blue,
+                            icon:
+                                Icon(Icons.shopping_cart, color: Colors.white),
+                            onPressed: () {
+                              orderUserCart(context);
+                            },
+                            label: Text(
+                              "ऑर्डर करा",
+                              style: TextStyle(color: Colors.white),
+                            ))
+                      ]))
                   : Container()
             ]);
           },
@@ -191,7 +237,11 @@ class _UserCartState extends State<UserCart> {
       });
     });
 
-    Map order = {'total': cart.totalPrice, 'items': itemsList};
+    int total = int.parse(widget.shop.data['minimum_order']) > cart.totalPrice
+        ? cart.totalPrice + 30
+        : cart.totalPrice;
+
+    Map order = {'total': total, 'items': itemsList};
 
     Firestore.instance.collection('orders').add({
       'location': {
